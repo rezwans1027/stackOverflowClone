@@ -160,3 +160,9 @@ code {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+
+.card-shadow {
+  @apply shadow-lg; /* Or any other shadow class you prefer */
+  box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.1), 0px -1px 4px -1px rgba(0, 0, 0, 0.1);
+}
