@@ -31,8 +31,8 @@ const QuestionCard = ({
     createdAt,
 }: customProps) => {
     return (
-        <div className='card-shadow rounded-lg p-8'>
-            <h3 className='h3-bold mb-4'>{title}</h3>
+        <div className='card-shadow rounded-lg p-8 card-wrapper'>
+            <h3 className='h3-bold mb-4 text-dark200_light900'>{title}</h3>
             <div className='flex gap-3'>
                 {tags.map(tag => (
                     <RenderTag key={tag._id}>{tag.name}</RenderTag>
@@ -44,23 +44,23 @@ const QuestionCard = ({
                 <div className='flex flex-wrap items-center gap-2'>
                     <div id='user' className='flex items-center gap-1'>
                         <Image src='/assets/icons/account.svg' alt='pfp' width={15} height={15} className='invert-colors' />
-                        <h4>{author.name}</h4>
+                        <h4 className='text-dark200_light900'>{author.name}</h4>
                     </div>
-                    <div id='ask-date' className='small-regular'> - asked {getTimestamp(createdAt)}</div>
+                    <div id='ask-date' className='small-regular text-dark200_light900'> - asked {getTimestamp(createdAt)}</div>
                 </div>
 
                 <div className='flex flex-wrap gap-3'>
                     <div className='flex items-center gap-1'>
                         <Image src='/assets/icons/like.svg' width={15} height={15} alt='' className='invert-colors' />
-                        <h4 className='small-regular'>{formatAndDivideNumber(upvotes)} Votes</h4>
+                        <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(upvotes)} Votes</h4>
                     </div>
                     <div className='flex items-center gap-1'>
                         <Image src='/assets/icons/message.svg' width={15} height={15} alt='' className='invert-colors' />
-                        <h4 className='small-regular'>{formatAndDivideNumber(answers)} Answers</h4>
+                        <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(answers)} Answers</h4>
                     </div>
                     <div className='flex items-center gap-1'>
                         <Image src='/assets/icons/eye.svg' width={15} height={15} alt='' className='invert-colors' />
-                        <h4 className='small-regular'>{formatAndDivideNumber(views)} Views</h4>
+                        <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(views)} Views</h4>
                     </div>
                 </div>
             </div>
