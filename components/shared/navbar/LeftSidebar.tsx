@@ -6,9 +6,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { SignedIn, SignedOut, SignOutButton, useAuth } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
-import close from '../../../public/assets/icons/close.svg'
-import account from '../../../public/assets/icons/account.svg'
-import signUp from '../../../public/assets/icons/sign-up.svg'
 
 const LeftSidebar = () => {
     const pathname = usePathname()
@@ -44,7 +41,7 @@ const LeftSidebar = () => {
                 <SignedIn>
                     <SignOutButton >
                         <div className='flex gap-3 p-4'>
-                            <Image src={close} height={20} width={20} alt='' className='' />
+                            <Image src='/assets/icons/close.svg' height={20} width={20} alt='' className='' />
                             <p className='text-xl dark:text-white max-lg:hidden'>Logout</p>
                         </div>
                     </SignOutButton>
@@ -53,14 +50,14 @@ const LeftSidebar = () => {
                     <div className='flex flex-col gap-2'>
                         <Link href='sign-in'>
                             <Button className='small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none'>
-                                <Image src={account} height={20} width={20} alt='log-in' className='lg:hidden' />
+                                <Image src='/assets/icons/account.svg' height={20} width={20} alt='log-in' className='lg:hidden' />
                                 <span className='primary-text-gradient text-lg max-lg:hidden'>Log In</span>
                             </Button>
                         </Link>
                         <Link href='sign-up'>
                             <Button className='small-medium light-border-2 btn-tertiary text-dark400_light900 
                             min-h-[41px] w-full rounded-lg px-4 py-3 text-lg shadow-none'>
-                                <Image src={signUp} height={20} width={20} alt='sign-up' className='lg:hidden' />
+                                <Image src='/assets/icons/sign-up.svg' height={20} width={20} alt='sign-up' className='lg:hidden' />
                                 <p className='max-lg:hidden'>Sign Up</p>
                             </Button>
                         </Link>
