@@ -18,7 +18,7 @@ interface Props {
     containerClasses?: string
 }
 
-const Filters = ({ filters }:Props) => {
+const Filters = ({ filters }: Props) => {
     return (
         <>
             <div className='mt-4 flex gap-3'>
@@ -26,11 +26,11 @@ const Filters = ({ filters }:Props) => {
             </div>
 
             <Select>
-                <SelectTrigger className="h-14 w-[180px] max-sm:w-full md:hidden">
+                <SelectTrigger className="h-14 w-[180px] border-none bg-light-800 outline-none dark:bg-dark-300 dark:text-white max-sm:w-full md:hidden">
                     <SelectValue placeholder="Select a filter" />
                 </SelectTrigger>
-                <SelectContent>
-                    {filters.map(item => (<SelectItem key={item.value} value={item.value}>{item.name}</SelectItem>))}
+                <SelectContent className='card-wrapper border-none bg-white dark:text-white'>
+                    {filters.map(item => (<SelectItem className='p-4' key={item.value} value={item.value}>{item.name}</SelectItem>))}
                 </SelectContent>
             </Select>
         </>

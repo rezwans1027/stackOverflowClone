@@ -1,24 +1,17 @@
 import QuestionCard from "@/components/cards/QuestionCard";
 import Filters from "@/components/shared/Filters";
+import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
+import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-const questions = [
-  {
-    _id: 1,
-    title: 'Cascading Deletes in SQLAlchemy?',
-    tags: [{_id: 1, name: 'python'}, {_id: 2, name: 'sql'}],
-    author: { _id: '1', name:'John Doe', picture: 'https://randomuser'},
-    upvotes: 100,
-    views: 100,
-    answers: 2, 
-    createdAt: new Date('2023-09-01T12:00:00.000Z')
-  }
-]
 
-export default function Home() {
+export default async function Home() {
+
+  const result = await getQuestions({})
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -44,25 +37,27 @@ export default function Home() {
       </div>
 
       <div className="mt-8 flex flex-col gap-6">
-        {questions.map(question => (
-          <QuestionCard 
-          key={question._id} 
-          _id={question._id}
-          title={question.title}
-          tags={question.tags}
-          author={question.author}
-          upvotes={question.upvotes}
-          views={question.views}
-          answers={question.answers}
-          createdAt={question.createdAt}
-          />    
-        ))}
-      </div> 
-
-
-      {/* {<NoResult />} */}
-
-
+        {result.questions.length > 0 ?
+          result.questions.map(question => (
+            <QuestionCard
+              key={question._id}
+              _id={question._id}
+              title={question.title}
+              tags={question.tags}
+              author={question.author}
+              upvotes={question.upvotes}
+              views={question.views}
+              answers={question.answers}
+              createdAt={question.createdAt}
+            />
+          ))
+          : <NoResult
+            title="There’s no question to show"
+            description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
+            link="/ask-question"
+            linkTitle="Ask a Question"
+          />}
+      </div>
     </>
   )
 }
