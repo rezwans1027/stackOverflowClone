@@ -14,7 +14,8 @@ export const connectToDatabase = async () => {
     }
 
     try {
-        await mongoose.connect(process.env.MONGODB_URL, {
+        const mongodbUrl = process.env.MONGODB_URL!; 
+        await mongoose.connect(mongodbUrl, {
             dbName: 'devflow'
         });
 
