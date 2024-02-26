@@ -6,6 +6,7 @@ import { createUser, deleteUser, updateUser } from "@/lib/actions/user.action";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  console.log("Webhook received");
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.NEXT_CLERK_WEBHOOK_SECRET;
 
@@ -52,10 +53,11 @@ export async function POST(req: Request) {
   }
 
   // Get the ID and type
-
+  // eslint-disable-next-line no-unused-vars
+  const { id } = evt.data
   const eventType = evt.type;
 
-  console.log("Event type: ", eventType);
+  console.log("Event type: ", {eventType});
 
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
