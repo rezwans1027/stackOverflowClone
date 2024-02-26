@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import React from 'react'
 import RenderTag from './RenderTag'
@@ -26,11 +25,11 @@ const RightSidebar = () => {
 
                 <div className='mt-8 flex flex-col gap-4'>
                     <div className='flex items-center justify-between'>
-                        <RenderTag className='bg-gray-700'>NEXTJS</RenderTag>
+                        <RenderTag >NEXTJS</RenderTag>
                         <p className='small-medium text-dark500_light700'>23</p>
                     </div>
                     <div className='flex items-center justify-between'>
-                        <RenderTag className='bg-gray-700'>NEXTJS</RenderTag>
+                        <RenderTag >NEXTJS</RenderTag>
                         <p className='small-medium text-dark500_light700'>23</p>
                     </div>
                 </div>
