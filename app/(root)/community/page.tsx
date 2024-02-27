@@ -36,17 +36,14 @@ const page = async () => {
           result && result.users?.length > 0 ?
             result?.users.map(user => (
               <UserCard
-                key={user._id}
-                picture={user.picture}
-                name={user.name}
-                username={user.username}
-                tags={['react', 'nodejs', 'javascript']}
+              key={user._id}
+                user={user}
               />
             ))
             : <NoResult
-            title="No users found"
-            description="Try a different username or search for a different user. There are many amazing minds out there."
-          />
+              title="No users found"
+              description="Try a different username or search for a different user. There are many amazing minds out there."
+            />
         }
       </div>
 

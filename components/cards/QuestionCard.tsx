@@ -2,13 +2,14 @@ import React from 'react'
 import RenderTag from '../shared/navbar/RenderTag'
 import Image from 'next/image'
 import { formatAndDivideNumber, getTimestamp } from '@/lib/utils'
+import Link from 'next/link'
 // add interface for props
 
 interface customProps {
     key: number
     _id: number
     title: string
-    tags: { _id: number, name: string }[]
+    tags: { _id: string, name: string }[]
     author: {
         _id: string
         name: string
@@ -32,10 +33,12 @@ const QuestionCard = ({
 }: customProps) => {
     return (
         <div className='card-shadow card-wrapper rounded-lg p-8'>
-            <h3 className='h3-bold text-dark200_light900 mb-4'>{title}</h3>
+            <Link href={`/question/${_id}`}>
+                <h3 className='h3-bold text-dark200_light900 mb-4'>{title}</h3>
+            </Link>
             <div className='flex gap-3'>
                 {tags.map(tag => (
-                    <RenderTag key={tag._id}>{tag.name}</RenderTag>
+                    <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
                 ))}
             </div>
 
