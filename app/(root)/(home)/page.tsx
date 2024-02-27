@@ -28,11 +28,12 @@ export default async function Home() {
           iconPosition='left'
           imgSrc='assets/icons/search.svg'
           placeholder="Search for questions"
-          otherClasses="flex-1 md:mb-8"
+          otherClasses="flex-1 max-sm:mb-8 md:mb-8"
         />
 
         <Filters
           filters={HomePageFilters}
+          spread={true}
         />
       </div>
 

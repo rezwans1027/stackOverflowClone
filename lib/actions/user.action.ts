@@ -5,10 +5,23 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase();
+
+    const users = await User.find({}).sort({ joinedAt: -1 });
+    return {users};
+
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export async function getUserById(params: any) {
   try {

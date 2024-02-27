@@ -31,8 +31,8 @@ const QuestionCard = ({
     createdAt,
 }: customProps) => {
     return (
-        <div className='card-shadow rounded-lg p-8 card-wrapper'>
-            <h3 className='h3-bold mb-4 text-dark200_light900'>{title}</h3>
+        <div className='card-shadow card-wrapper rounded-lg p-8'>
+            <h3 className='h3-bold text-dark200_light900 mb-4'>{title}</h3>
             <div className='flex gap-3'>
                 {tags.map(tag => (
                     <RenderTag key={tag._id}>{tag.name}</RenderTag>
@@ -43,7 +43,7 @@ const QuestionCard = ({
             <div className='mt-5 flex flex-wrap justify-between gap-5'>
                 <div className='flex flex-wrap items-center gap-2'>
                     <div id='user' className='flex items-center gap-1'>
-                        <Image src='/assets/icons/account.svg' alt='pfp' width={15} height={15} className='invert-colors' />
+                        <Image src={author.picture} alt='pfp' width={15} height={15} className='rounded-2xl' />
                         <h4 className='text-dark200_light900'>{author.name}</h4>
                     </div>
                     <div id='ask-date' className='small-regular text-dark200_light900'> - asked {getTimestamp(createdAt)}</div>
