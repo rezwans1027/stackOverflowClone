@@ -1,17 +1,17 @@
 import Image from 'next/image'
 import React from 'react'
-import RenderTag from '../shared/navbar/RenderTag'
+import RenderTag from '../shared/RenderTag'
 import Link from 'next/link'
 import { getTopInteractedTags } from '@/lib/actions/tag.actions'
 
 interface customParams {
     user: {
-    _id: string
-    clerkId: string
-    picture: string
-    name: string
-    username: string
-}
+        _id: string
+        clerkId: string
+        picture: string
+        name: string
+        username: string
+    }
 }
 
 const UserCard = async ({
@@ -21,8 +21,8 @@ const UserCard = async ({
     const interactedTags = await getTopInteractedTags({ userId: user._id })
 
     return (
-        <Link 
-        href={`/profile/${user.clerkId}`}
+        <Link
+            href={`/profile/${user.clerkId}`}
         >
             <div className='card-shadow card-wrapper flex h-72 w-64 flex-col items-center truncate rounded-xl px-8 pt-8'>
                 <Image

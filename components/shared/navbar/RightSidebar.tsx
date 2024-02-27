@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import RenderTag from './RenderTag'
+import RenderTag from '../RenderTag'
 
 const RightSidebar = () => {
     return (

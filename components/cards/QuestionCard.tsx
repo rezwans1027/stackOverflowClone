@@ -1,5 +1,5 @@
 import React from 'react'
-import RenderTag from '../shared/navbar/RenderTag'
+import RenderTag from '../shared/RenderTag'
 import Image from 'next/image'
 import { formatAndDivideNumber, getTimestamp } from '@/lib/utils'
 import Link from 'next/link'
