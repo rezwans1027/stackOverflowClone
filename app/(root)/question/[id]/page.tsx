@@ -1,17 +1,24 @@
 import Answer from '@/components/forms/Answer';
+import AllAnswers from '@/components/shared/AllAnswers';
 import ParseHTML from '@/components/shared/ParseHTML';
 import RenderTag from '@/components/shared/RenderTag';
+import Votes from '@/components/shared/Votes';
 import { getQuestionById } from '@/lib/actions/question.action';
+import { getUserById } from '@/lib/actions/user.action';
 import { formatAndDivideNumber, getTimestamp } from '@/lib/utils';
+import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 
 const Page = async ({ params, searchParams }: any) => {
     const result = await getQuestionById({ questionId: params.id });
+    const { userId } = auth()
+
+    const mongoUser = await getUserById({ userId })
 
     return (
-        <>
+        <div className=''>
             <div className="flex-start w-full flex-col ">
                 <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
                     <Link href={`/profile/${result.author.clerkId}`}
@@ -28,7 +35,17 @@ const Page = async ({ params, searchParams }: any) => {
                         </p>
                     </Link>
                     <div className="flex justify-end">
-                        VOTING
+                        <Votes
+                            type={"question"}
+                            itemId={result._id.toString()}
+                            userId={mongoUser._id.toString()}
+                            upvotes={result.upvotes.length}
+                            downvotes={result.downvotes.length}
+                            hasUpvoted={result.upvotes.includes(mongoUser._id.toString())}
+                            hasDownvoted={result.downvotes.includes(mongoUser._id.toString())}
+                            hasSaved={mongoUser?.saved.includes(result._id)}
+
+                        />
                     </div>
                 </div>
                 <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
@@ -43,7 +60,7 @@ const Page = async ({ params, searchParams }: any) => {
                 </div>
                 <div className='flex items-center gap-1'>
                     <Image src='/assets/icons/message.svg' width={15} height={15} alt='' className='invert-colors' />
-                    <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(result.answers)} Answers</h4>
+                    <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(result.answers.length)} Answers</h4>
                 </div>
                 <div className='flex items-center gap-1'>
                     <Image src='/assets/icons/eye.svg' width={15} height={15} alt='' className='invert-colors' />
@@ -60,10 +77,12 @@ const Page = async ({ params, searchParams }: any) => {
                 ))}
             </div>
 
-            <Answer />
+            <AllAnswers questionId={result._id} totalAnswers={result.answers.length} />
+
+            <Answer mongoUserId={mongoUser._id.toString()} questionId={result._id.toString()} />
 
 
-        </>
+        </div>
     )
 }
 

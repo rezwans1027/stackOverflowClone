@@ -4,7 +4,7 @@ import RenderTag from '../RenderTag'
 
 const RightSidebar = () => {
     return (
-        <div className='background-light900_dark200 sticky right-0 top-0 z-40 h-[100vh] w-96 p-6 shadow-xl dark:shadow-none max-xl:hidden'>
+        <div className='background-light900_dark200 sticky right-0 top-0 z-40 h-[100vh] w-96 min-w-96 p-6 shadow-xl dark:shadow-none max-xl:hidden'>
 
             <div className='mt-28 dark:text-white'>
                 <h3 className='h3-bold'>Top Questions</h3>
@@ -25,11 +25,11 @@ const RightSidebar = () => {
 
                 <div className='mt-8 flex flex-col gap-4'>
                     <div className='flex items-center justify-between'>
-                        <RenderTag >NEXTJS</RenderTag>
+                        <RenderTag _id={''} name={'nextjs'}/>
                         <p className='small-medium text-dark500_light700'>23</p>
                     </div>
                     <div className='flex items-center justify-between'>
-                        <RenderTag >NEXTJS</RenderTag>
+                        <RenderTag _id={''} name={'nextjs'}/>
                         <p className='small-medium text-dark500_light700'>23</p>
                     </div>
                 </div>

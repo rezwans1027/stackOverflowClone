@@ -67,7 +67,6 @@ const Question = ({ mongoUserId }: props) => {
         } finally {
             setIsSubmitting(false)
         }
-        console.log(values)
     }
 
     const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, field: any) => {
@@ -152,7 +151,7 @@ const Question = ({ mongoUserId }: props) => {
                                             'alignright alignjustify | bullist numlist',
                                         content_style: 'body { font-family:Inter; font-size:16px }',
                                         skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
-                                        content_css: mode === 'dark' ? 'dark' : 'light'
+                                        content_css: mode === 'dark' ? 'dark' : 'default'
                                     }}
                                 />
 

@@ -15,9 +15,9 @@ interface customProps {
         name: string
         picture: string
     }
-    upvotes: number
+    upvotes: Array<object>
     views: number
-    answers: number
+    answers: Array<object>
     createdAt: Date
 }
 
@@ -55,11 +55,11 @@ const QuestionCard = ({
                 <div className='flex flex-wrap gap-3'>
                     <div className='flex items-center gap-1'>
                         <Image src='/assets/icons/like.svg' width={15} height={15} alt='' className='invert-colors' />
-                        <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(upvotes)} Votes</h4>
+                        <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(upvotes.length)} Votes</h4>
                     </div>
                     <div className='flex items-center gap-1'>
                         <Image src='/assets/icons/message.svg' width={15} height={15} alt='' className='invert-colors' />
-                        <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(answers)} Answers</h4>
+                        <h4 className='small-regular text-dark200_light900'>{formatAndDivideNumber(answers.length)} Answers</h4>
                     </div>
                     <div className='flex items-center gap-1'>
                         <Image src='/assets/icons/eye.svg' width={15} height={15} alt='' className='invert-colors' />

@@ -9,10 +9,6 @@ export const connectToDatabase = async () => {
         console.error('MONGODB_URL is missing');
     }
 
-    if(isConnected) {
-        return console.log('using existing database connection');
-    }
-
     try {
         const mongodbUrl = process.env.MONGODB_URL!; 
         await mongoose.connect(mongodbUrl, {

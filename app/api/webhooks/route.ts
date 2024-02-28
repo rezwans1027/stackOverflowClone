@@ -56,8 +56,6 @@ export async function POST(req: Request) {
   // eslint-disable-next-line no-unused-vars
   const eventType = evt.type;
 
-  console.log("Event type: ", {eventType});
-
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;

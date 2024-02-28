@@ -9,12 +9,19 @@ import { Editor } from '@tinymce/tinymce-react'
 import { useTheme } from '@/context/ThemeProvider'
 import { Button } from '../ui/button'
 import Image from 'next/image'
+import { createAnswer } from '@/lib/actions/answer.action'
+import { usePathname } from 'next/navigation'
 
+interface props {
+    mongoUserId: string,
+    questionId: string
+}
 
-const Answer = () => {
+const Answer = ({ mongoUserId, questionId }: props) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const editorRef = useRef(null)
     const { mode } = useTheme()
+    const path = usePathname()
 
     const form = useForm<z.infer<typeof AnswerSchema>>({
         resolver: zodResolver(AnswerSchema),
@@ -23,8 +30,28 @@ const Answer = () => {
         }
     })
 
-    const handleCreateAnswer = (data: z.infer<typeof AnswerSchema>) => {
-        console.log(data)
+    const handleCreateAnswer = async (data: z.infer<typeof AnswerSchema>) => {
+        try {
+            setIsSubmitting(true)
+
+            await createAnswer({
+                content: data.answer,
+                question: questionId,
+                author: mongoUserId,
+                path
+            })
+
+            form.reset()
+            if (editorRef.current) {
+                (editorRef.current as any).setContent('')
+            }
+        }
+        catch (error) {
+            console.error(error)
+        }
+        finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (
@@ -68,7 +95,8 @@ const Answer = () => {
                                                 'alignright alignjustify | bullist numlist',
                                             content_style: 'body { font-family:Inter; font-size:16px }',
                                             skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
-                                            content_css: mode === 'dark' ? 'dark' : 'light'
+                                            content_css: mode === 'dark' ? 'dark' : 'default',
+                                            elementpath: false,
                                         }}
                                     />
 

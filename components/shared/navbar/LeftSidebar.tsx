@@ -12,8 +12,8 @@ const LeftSidebar = () => {
     const { userId } = useAuth();
 
     return (
-        <div className='background-light900_dark200 sticky left-0 top-0 flex h-[100vh] w-64 flex-col justify-between p-4 
-        pt-32 text-3xl shadow-light-300 dark:shadow-none max-lg:w-20 max-sm:hidden'>
+        <div className='background-light900_dark200 sticky left-0 top-0 flex h-[100vh] w-64 min-w-64 flex-col justify-between 
+        p-4 pt-32 text-3xl shadow-light-300 dark:shadow-none max-lg:w-20 max-lg:min-w-20 max-sm:hidden'>
             <div className='flex flex-col gap-2 '>
                 {sidebarLinks.map(item => {
                     const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
