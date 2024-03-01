@@ -15,7 +15,7 @@ const Page = async ({ params, searchParams }: any) => {
     const result = await getQuestionById({ questionId: params.id });
     const { userId } = auth()
 
-    const mongoUser = await getUserById({ userId })
+    const mongoUser = await getUserById({ userId: userId! })
 
     return (
         <div className=''>
