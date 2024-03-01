@@ -2,8 +2,9 @@
 
 import Tag from "@/database/tag.model";
 import { connectToDatabase } from "../mongoose";
-import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared.types";
+import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams } from "./shared.types";
 import User from "@/database/user.model";
+import Question from "@/database/question.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -27,7 +28,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   }
 }
 
-export async function getAllTags({params}: GetAllTagsParams) {
+export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
@@ -35,6 +36,42 @@ export async function getAllTags({params}: GetAllTagsParams) {
 
     return {tags};
 
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getTagNameById(params: string) {
+  try {
+    connectToDatabase();
+
+    const { name } = await Tag.findById(params);
+
+    return name
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getQuestionsByTag(params: GetQuestionsByTagIdParams) {
+  try {
+    connectToDatabase();
+
+    const { tagId, searchQuery } = params;
+
+    const tag = await Tag.findById(tagId).populate({
+      path: "questions",
+      match: searchQuery ? { title: { $regex: new RegExp(searchQuery, "i") } } : {},
+      model: Question,
+      populate: [
+        { path: "tags", model: Tag, select: "_id name" },
+        { path: "author", model: User, select: "_id name picture" }
+      ],
+      select: "_id title createdAt upvotes views answers",
+    });
+
+    return { tagTitle: tag.name, questions: tag.questions };
   } catch (error) {
     console.error(error);
   }
