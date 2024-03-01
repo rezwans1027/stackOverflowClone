@@ -9,7 +9,7 @@ import { auth } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import PaginationBar from '@/components/shared/Pagination'
+import PaginationBar from '@/components/shared/PaginationBar'
 
 
 const page = async ({ params, searchParams }: any) => {

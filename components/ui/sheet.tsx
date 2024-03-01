@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 "use client"
 
 import * as React from "react"
@@ -63,13 +64,12 @@ const SheetContent = React.forwardRef<
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
       {...props}
-    >
+    />
       {children}
       <SheetPrimitive.Close className=" data-[state=open]:bg-secondary absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none">
         <X className="size-4" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
-    </SheetPrimitive.Content>
   </SheetPortal>
 ))
 SheetContent.displayName = SheetPrimitive.Content.displayName
