@@ -22,7 +22,7 @@ const AllAnswers = async ({ questionId, totalAnswers }: props) => {
 
     const { userId } = auth()
 
-    const mongoUser = await getUserById({ userId })
+    const mongoUser = await getUserById({ userId: userId! })
 
     const result = await getAnswersByQuestionId({ questionId })
 
@@ -54,11 +54,11 @@ const AllAnswers = async ({ questionId, totalAnswers }: props) => {
                             <Votes
                             type={"answer"}
                             itemId={answer._id.toString()}
-                            userId={mongoUser._id.toString()}
+                            userId={mongoUser?._id.toString()}
                             upvotes={answer.upvotes.length}
                             downvotes={answer.downvotes.length}
-                            hasUpvoted={answer.upvotes.includes(mongoUser._id.toString())}
-                            hasDownvoted={answer.downvotes.includes(mongoUser._id.toString())}
+                            hasUpvoted={answer.upvotes.includes(mongoUser?._id.toString())}
+                            hasDownvoted={answer.downvotes.includes(mongoUser?._id.toString())}
 
                         />
                             </div>

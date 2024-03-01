@@ -38,7 +38,7 @@ const ParseHTML = ({ data }: Props) => {
     }, [])
 
     return (
-        <div className='w-[200px] shrink-0 grow' style={{ hyphens: 'auto' }}>
+        <div className='w-[200px] shrink-0 grow dark:text-white' style={{ hyphens: 'auto' }}>
             {parse(data)}
         </div>
     )
