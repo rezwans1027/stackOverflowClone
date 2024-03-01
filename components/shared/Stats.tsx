@@ -1,7 +1,8 @@
+
 import Image from 'next/image'
 import React from 'react'
 
-const Stats = ({ answers, questions }) => {
+const Stats = ({ answers, questions }:any) => {
     return (
         <div className='grid grid-cols-4 gap-2 max-sm:grid-cols-2 max-xs:grid-cols-1'>
 
