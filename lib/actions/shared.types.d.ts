@@ -150,8 +150,8 @@ export interface GetSavedQuestionsParams {
 
 export interface GetUserStatsParams {
   userId: string;
-  page?: number;
-  pageSize?: number;
+  page: number;
+  pageSize: number;
 }
 
 export interface DeleteUserParams {

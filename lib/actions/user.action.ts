@@ -12,14 +12,14 @@ import {
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+import Answer from "@/database/answer.model";
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 
     const users = await User.find({}).sort({ joinedAt: -1 });
-    return {users};
-
+    return { users };
   } catch (error) {
     console.error(error);
   }
@@ -72,20 +72,19 @@ export async function deleteUser(params: DeleteUserParams) {
       throw new Error("User not found");
     }
 
-    // delete user from database 
+    // delete user from database
     // and questions, answers, comments, and likes, etc.
 
     // const userQuestionIds = await Question.find({author: user._id}).distinct('_id');
-    await Question.find({author: user._id}).distinct('_id');
+    await Question.find({ author: user._id }).distinct("_id");
 
-    await Question.deleteMany({author: user._id});
+    await Question.deleteMany({ author: user._id });
 
     // TODO: delete user answers, comments, likes, etc.
 
     const deletedUser = await User.findByIdAndDelete(user._id);
 
     return deletedUser;
-
   } catch (error) {
     console.error(error);
   }
@@ -97,21 +96,42 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
 
     const { userId, questionId, path } = params;
 
-
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
 
     if (!user.saved.includes(questionId)) {
-      console.log("option 2")
-      await User.findByIdAndUpdate(userId, { $push: { saved: questionId } }, { new: true });
-    } else {  
-      console.log("option 1")
-      await User.findByIdAndUpdate(userId, { $pull: { saved: questionId } }, { new: true });
+      console.log("option 2");
+      await User.findByIdAndUpdate(
+        userId,
+        { $push: { saved: questionId } },
+        { new: true }
+      );
+    } else {
+      console.log("option 1");
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { saved: questionId } },
+        { new: true }
+      );
     }
 
     revalidatePath(path);
-
   } catch (error) {
     console.error(error);
   }
 }
 
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    connectToDatabase();
+
+    const { userId } = params;
+
+    const user = await User.findOne({ clerkId: userId });
+    const totalQuestions = await Question.countDocuments({ author: user._id })
+    const totalAnswers = await Answer.countDocuments({ author: user._id })
+
+    return { user, totalQuestions, totalAnswers };
+  } catch (error) {
+    console.error(error);
+  }
+}

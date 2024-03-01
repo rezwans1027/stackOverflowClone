@@ -59,3 +59,21 @@ export function getMonthAndYear(date:Date) {
   const year = date.getFullYear();
   return `${month} ${year}`;
 }
+
+export function addSearchParams(currentSearchParams:any, searchParamsToAdd:any) {
+  // Combine current search parameters with new ones
+  const combinedParams = { ...currentSearchParams, ...searchParamsToAdd };
+
+  // Construct the query string
+  const queryString = new URLSearchParams(combinedParams).toString();
+
+  return `?${queryString}`;
+}
+
+export const handlePageChange = () => {
+  // Scroll to the top of the page
+  window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // Optional: Use smooth scrolling effect
+  });
+};

@@ -1,16 +1,25 @@
+import QuestionCard from '@/components/cards/QuestionCard'
+import Stats from '@/components/shared/Stats'
 import { Button } from '@/components/ui/button'
-import { getUserById } from '@/lib/actions/user.action'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getUserQuestions } from '@/lib/actions/question.action'
+import { getUserInfo } from '@/lib/actions/user.action'
 import { getMonthAndYear } from '@/lib/utils'
 import { auth } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import PaginationBar from '@/components/shared/Pagination'
 
-const page = async ({ params }: any) => {
+
+const page = async ({ params, searchParams }: any) => {
+
+    console.log(searchParams)
 
     const { userId } = auth()
-    const user = await getUserById({ userId: params.id })
-    console.log(user.clerkId, params.id)
+    const { user, totalQuestions, totalAnswers } = await getUserInfo({ userId: params.id }) as { user: any; totalQuestions: number; totalAnswers: number }
+
+    const { questions, totalPages } = await getUserQuestions({ userId: user._id, page: searchParams.page || 1 , pageSize: 5 }) as { questions: any[]; totalPages: number }
 
     return (
         <div>
@@ -47,13 +56,47 @@ const page = async ({ params }: any) => {
 
 
                 {userId === params.id && <div className='ml-auto'>
-                    <Button className="background-light750_dark300 min-h-[46px] px-4 py-3 dark:text-white  ">Edit Profile</Button>
+                    <Button className="background-light750_dark300 min-h-[46px] px-6 py-3 dark:text-white  ">Edit Profile</Button>
                 </div>}
 
 
             </div>
 
-            STATS
+            <div className='mb-10'>
+                <h1 className='h3-bold my-6 dark:text-white'>Stats</h1>
+                <Stats answers={totalAnswers} questions={totalQuestions} />
+            </div>
+
+            <Tabs defaultValue="account" className="mt-4">
+                <TabsList className='background-light700_dark300 text-dark300_light700 px-1 py-5'>
+                    <TabsTrigger
+                        className='rounded-sm px-2 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:data-[state=active]:bg-dark-500 ' value="account">Top Posts</TabsTrigger>
+                    <TabsTrigger className='rounded-sm px-2 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:data-[state=active]:bg-dark-500 ' value="password">Answers</TabsTrigger>
+                </TabsList>
+                <TabsContent value="account" >
+                    <div className='mt-8'>
+                        <div className='flex flex-col gap-6'>
+                            {questions && questions.map((question: any) => (
+                                <QuestionCard
+                                    key={question._id}
+                                    _id={question._id}
+                                    title={question.title}
+                                    tags={question.tags}
+                                    author={question.author}
+                                    upvotes={question.upvotes}
+                                    views={question.views}
+                                    answers={question.answers}
+                                    createdAt={question.createdAt}
+                                />
+                            ))}
+
+                            <PaginationBar searchParams={searchParams} totalPages={totalPages} />
+
+                        </div>
+                    </div>
+                </TabsContent>
+                <TabsContent value="password">Change your password here.</TabsContent>
+            </Tabs>
 
         </div>
     )

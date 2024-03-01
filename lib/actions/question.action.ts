@@ -8,6 +8,7 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   GetSavedQuestionsParams,
+  GetUserStatsParams,
   QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
@@ -127,21 +128,55 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 
     const { clerkId, searchQuery } = params;
 
-    const query: FilterQuery<typeof Question> = searchQuery ? { title: { $regex: new RegExp(searchQuery, "i") } } : {};
+    const query: FilterQuery<typeof Question> = searchQuery
+      ? { title: { $regex: new RegExp(searchQuery, "i") } }
+      : {};
 
-    const user = await User.findOne({ clerkId, }).populate({
+    const user = await User.findOne({ clerkId }).populate({
       path: "saved",
       match: query,
       model: Question,
       populate: [
         { path: "tags", model: Tag, select: "_id name" },
-        { path: "author", model: User, select: "_id name picture" }
+        { path: "author", model: User, select: "_id name picture" },
       ],
       select: "_id title createdAt upvotes views answers",
     });
 
     return user.saved;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page, pageSize } = params;
+
+    const totalQuestionsCount = await Question.countDocuments({
+      author: userId,
+    });
+    const totalPages = Math.ceil(totalQuestionsCount / pageSize);
+
+    let questions = await Question.find({ author: userId })
+      .populate({ path: "tags", model: Tag, select: "_id name" })
+      .populate({ path: "author", model: User, select: "_id name picture" })
+      .populate({ path: "upvotes", model: User, select: "_id" });
+
+    // Sort questions based on the number of upvotes
+    questions.sort((a, b) => {
+      const upvotesCountA = a.upvotes.length;
+      const upvotesCountB = b.upvotes.length;
+        
+      return upvotesCountB - upvotesCountA;
+    });
+
+    // Apply pagination
+    questions = questions.slice((page - 1) * pageSize, page * pageSize);
+
+    return { questions, totalPages };
   } catch (error) {
     console.error(error);
   }

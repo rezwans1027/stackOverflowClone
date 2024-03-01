@@ -10,17 +10,20 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined >(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [mode, setMode] = useState('')
+    const [mode, setMode] = useState(() => localStorage.getItem('theme') || 'light')
 
     const handleThemeChange = () => {
         if (localStorage.theme === 'dark' || (!("theme" in localStorage)) && window.matchMedia("(prefers-color-scheme: dark)").matches) {
             setMode('dark')
             document.documentElement.classList.add('dark')
+            localStorage.setItem('theme', 'dark');
         } else {
             setMode('light')
             document.documentElement.classList.remove('dark')
+            localStorage.setItem('theme', 'light');
         }
     }
+
 
     useEffect(() => {
         handleThemeChange()

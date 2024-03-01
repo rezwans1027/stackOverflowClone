@@ -13,7 +13,6 @@ const Page = async () => {
 const { userId } = auth()
 
   const result = await getSavedQuestions({ clerkId: userId! })
-  console.log(result)
 
   return (
     <>
