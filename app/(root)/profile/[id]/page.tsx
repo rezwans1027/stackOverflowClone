@@ -89,6 +89,7 @@ const page = async ({ params, searchParams }: any) => {
                                     views={question.views}
                                     answers={question.answers}
                                     createdAt={question.createdAt}
+                                    showEdit={userId === params.id}
                                 />
                             ))}
 

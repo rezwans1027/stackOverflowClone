@@ -9,13 +9,13 @@ import React from 'react'
 const Page = async ({params}:URLProps) => {
   const { userId } = auth()
 
-  if (!userId) redirect('/sign-in')
+
   const question = await getQuestionById({questionId: params.id})
 
-  if(question.author._id !== userId) redirect('/')
+  if(question.author.clerkId !== userId) redirect('/not-found')
 
 
-  const mongoUser = await getUserById({ userId })
+  const mongoUser = await getUserById({ userId: userId! })
 
   return (
     <div>
