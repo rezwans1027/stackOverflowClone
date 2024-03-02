@@ -10,16 +10,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import PaginationBar from '@/components/shared/PaginationBar'
+import { getUserAnswers } from '@/lib/actions/answer.action'
+import AnswerCard from '@/components/cards/AnswerCard'
 
 
 const page = async ({ params, searchParams }: any) => {
 
-    console.log(searchParams)
-
     const { userId } = auth()
     const { user, totalQuestions, totalAnswers } = await getUserInfo({ userId: params.id }) as { user: any; totalQuestions: number; totalAnswers: number }
 
-    const { questions, totalPages } = await getUserQuestions({ userId: user._id, page: searchParams.page || 1 , pageSize: 5 }) as { questions: any[]; totalPages: number }
+    const { questions, totalPages } = await getUserQuestions({ userId: user._id, page: searchParams.page || 1, pageSize: 5 }) as { questions: any[]; totalPages: number }
+
+    const { answers, totalAnswerPages } = await getUserAnswers({ userId: user._id, page: searchParams.page || 1, pageSize: 5 }) as { answers: any[]; totalAnswerPages: number }
 
     return (
         <div>
@@ -34,7 +36,7 @@ const page = async ({ params, searchParams }: any) => {
                         <div className='mt-4 flex flex-wrap items-center gap-3'>
                             {user.porfolioWebsite && <div className='flex items-center gap-1'>
                                 <Image src='/assets/icons/link.svg' width={20} height={20} alt='link' />
-                                <Link href='https://rezwansheikh.com' className='text-blue-500'>{user.portfolioWebsite}</Link>
+                                <Link href={user.porfolioWebsite} className='text-blue-500'>{user.portfolioWebsite}</Link>
                             </div>}
                             {user.location && <div className='flex gap-1'>
                                 <Image src='/assets/icons/location.svg' width={20} height={20} alt='location' />
@@ -47,12 +49,7 @@ const page = async ({ params, searchParams }: any) => {
                         </div>
                         <h3 className='mt-5 dark:text-white'>{user.bio}</h3>
                     </div>
-
-
-
                 </div>
-
-
 
 
                 {userId === params.id && <div className='ml-auto'>
@@ -69,14 +66,19 @@ const page = async ({ params, searchParams }: any) => {
 
             <Tabs defaultValue="account" className="mt-4">
                 <TabsList className='background-light700_dark300 text-dark300_light700 px-1 py-5'>
-                    <TabsTrigger
-                        className='rounded-sm px-2 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:data-[state=active]:bg-dark-500 ' value="account">Top Posts</TabsTrigger>
-                    <TabsTrigger className='rounded-sm px-2 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:data-[state=active]:bg-dark-500 ' value="password">Answers</TabsTrigger>
+                    <Link href={`${user.clerkId}`} >
+                        <TabsTrigger
+                            className='rounded-sm px-2 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:data-[state=active]:bg-dark-500 ' value="account">Top Posts</TabsTrigger>
+                    </Link>
+                    <Link href={`${user.clerkId}`} >
+                        <TabsTrigger className='rounded-sm px-2 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:data-[state=active]:bg-dark-500 ' value="password">Answers</TabsTrigger>
+                    </Link>
+
                 </TabsList>
                 <TabsContent value="account" >
                     <div className='mt-8'>
-                        <div className='flex flex-col gap-6'>
-                            {questions && questions.map((question: any) => (
+                        {questions.length && <div className='flex flex-col gap-6'>
+                            {questions.map((question: any) => (
                                 <QuestionCard
                                     key={question._id}
                                     _id={question._id}
@@ -92,10 +94,29 @@ const page = async ({ params, searchParams }: any) => {
 
                             <PaginationBar searchParams={searchParams} totalPages={totalPages} />
 
-                        </div>
+                        </div>}
                     </div>
                 </TabsContent>
-                <TabsContent value="password">Change your password here.</TabsContent>
+                <TabsContent value="password">
+                    <div className='mt-8'>
+                        {answers.length && <div className='flex flex-col gap-6'>
+                            {answers.map((answer: any) => (
+                                <AnswerCard
+                                    key={answer._id}
+                                    _id={answer._id}
+                                    title={answer.question.title}
+                                    author={answer.author}
+                                    upvotes={answer.upvotes}
+                                    question={answer.question}
+                                    createdAt={answer.createdAt}
+                                    showDelete={userId === params.id}
+                                />
+                            ))}
+                            <PaginationBar searchParams={searchParams} totalPages={totalAnswerPages} />
+
+                        </div>}
+                    </div>
+                </TabsContent>
             </Tabs>
 
         </div>

@@ -3,7 +3,7 @@
 import { connectToDatabase } from "../mongoose";
 import Answer from "@/database/answer.model";
 import Question from "@/database/question.model";
-import { AnswerVoteParams, CreateAnswerParams, GetAnswersParams } from "./shared.types";
+import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams, GetUserStatsParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import User from "@/database/user.model";
 
@@ -88,3 +88,51 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
     throw new Error("Error upvoting Answer");
   }
 }
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page, pageSize } = params;
+
+    const totalAnswersCount = await Answer.countDocuments({
+      author: userId,
+    });
+    const totalAnswerPages = Math.ceil(totalAnswersCount / pageSize);
+
+    let answers = await Answer.find({ author: userId })
+      .populate({ path: "author", model: User, select: "_id name picture" })
+      .populate({ path: "upvotes", model: User, select: "_id" })
+      .populate({ path: "question", model: Question, select: "_id title" })
+
+    // Sort answers based on the number of upvotes
+    answers.sort((a, b) => {
+      const upvotesCountA = a.upvotes.length;
+      const upvotesCountB = b.upvotes.length;
+      const upvotesSort = upvotesCountB - upvotesCountA;
+
+      return upvotesSort;
+    });
+
+    // Apply pagination
+    answers = answers.slice((page - 1) * pageSize, page * pageSize);
+
+    return { answers, totalAnswerPages };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function deleteAnswer({ answerId, path }:DeleteAnswerParams) {
+  try {
+    connectToDatabase();
+
+    const answer = await Answer.findByIdAndDelete(answerId);
+    await Question.findByIdAndUpdate(answer.question, { $pull: { answers: answerId } });
+
+    revalidatePath(path);
+  } catch (error) {
+    console.error(error);
+  }
+}
+

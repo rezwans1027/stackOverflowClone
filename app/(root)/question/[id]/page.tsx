@@ -47,7 +47,9 @@ const Page = async ({ params, searchParams }: any) => {
                         />
                     </div>
                 </div>
-                <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
+                <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left" 
+                style={{ overflowWrap: 'break-word', hyphens: 'auto' }}
+                >
                     {result.title}
                 </h2>
             </div>
