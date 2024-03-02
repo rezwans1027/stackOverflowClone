@@ -10,12 +10,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined >(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [mode, setMode] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('theme') || 'light';
-        }
-        return 'light';
-    });
+    const [mode, setMode] = useState('');
 
     const handleThemeChange = () => {
         if (typeof window !== 'undefined') {

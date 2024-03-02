@@ -41,7 +41,7 @@ const AnswerCard = ({
                     <Confirmation
                     title="Are you sure you want to delete this answer?"
                     description="This action cannot be undone."
-                    type="delete"
+                    type="deleteAnswer"
                     objectId={_id.toString()}
                     >
                         <Image src='/assets/icons/trash.svg' width={20} height={20} alt='delete' />

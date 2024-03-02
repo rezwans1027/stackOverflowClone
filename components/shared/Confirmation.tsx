@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { usePathname } from 'next/navigation'
 import { deleteAnswer } from '@/lib/actions/answer.action'
+import { useToast } from "@/components/ui/use-toast"
+import { deleteQuestion } from '@/lib/actions/question.action'
 
 interface customProps {
     children: React.ReactNode
@@ -22,8 +24,34 @@ interface customProps {
     objectId: string
 }
 
+
+
 const Confirmation = ({ children, title, description, type, objectId }: customProps) => {
     const path = usePathname()
+    const { toast } = useToast()
+
+
+    const clickHandler = () => {
+        switch (type) {
+            case 'deleteAnswer': {
+                deleteAnswer({ answerId: objectId, path });
+                toast({ description: "Your answer has been deleted." },);
+                break
+            }
+            case 'deleteQuestion': {
+                deleteQuestion({ questionId: objectId, path });
+                toast({ description: "Your question has been deleted." },);
+                break
+            }
+            default: {
+                break
+            }
+
+        }
+    }
+
+
+
 
     return (
         <AlertDialog>
@@ -37,7 +65,10 @@ const Confirmation = ({ children, title, description, type, objectId }: customPr
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => deleteAnswer({answerId:objectId, path})}>Continue</AlertDialogAction>
+                    <AlertDialogAction
+                        className='text-red-500 dark:bg-red-500 dark:text-white'
+                        onClick={clickHandler}
+                    >Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

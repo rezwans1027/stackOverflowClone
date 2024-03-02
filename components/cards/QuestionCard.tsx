@@ -3,6 +3,7 @@ import RenderTag from '../shared/RenderTag'
 import Image from 'next/image'
 import { formatAndDivideNumber, getTimestamp } from '@/lib/utils'
 import Link from 'next/link'
+import Confirmation from '../shared/Confirmation'
 // add interface for props
 
 interface customProps {
@@ -19,6 +20,7 @@ interface customProps {
     views: number
     answers: Array<object>
     createdAt: Date
+    showEdit?: boolean
 }
 
 const QuestionCard = ({
@@ -30,12 +32,32 @@ const QuestionCard = ({
     views,
     answers,
     createdAt,
+    showEdit
 }: customProps) => {
     return (
-        <div className='card-wrapper rounded-lg p-8'>
-            <Link href={`/question/${_id}`} className='w-full'>
-                <p className='h3-bold text-dark200_light900 line-clamp mx-0 mb-4 w-full px-0'>{title}</p>
-            </Link>
+        <div className='card-wrapper rounded-lg p-8 '>
+            <div className='mb-4 flex items-center justify-between'>
+                <Link href={`/question/${_id}`} className='w-full'>
+                    <p className='h3-bold text-dark200_light900 line-clamp mx-0 w-full px-0'>{title}</p>
+                </Link>
+                <div className='ml-4 flex gap-2'>
+                    <Link href={`/question/${_id}/edit`} className=''>
+                         <Image src='/assets/icons/edit.svg' width={20} height={20} alt='more' className='' />
+                    </Link>
+                   
+                    <Confirmation
+                        title="Are you sure you want to delete this question?"
+                        description="This action cannot be undone."
+                        type="deleteQuestion"
+                        objectId={_id.toString()}
+                    >
+                        <Image src='/assets/icons/trash.svg' width={20} height={20} alt='more' className='' />
+                    </Confirmation>
+
+                </div>
+
+            </div>
+
             <div className='flex gap-3'>
                 {tags.map(tag => (
                     <RenderTag key={tag._id} _id={tag._id} name={tag.name} />

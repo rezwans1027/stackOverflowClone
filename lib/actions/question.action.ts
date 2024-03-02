@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import Tag from "@/database/tag.model";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   GetSavedQuestionsParams,
@@ -14,6 +15,7 @@ import {
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import { FilterQuery } from "mongoose";
+import Answer from "@/database/answer.model";
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
@@ -163,7 +165,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
     let questions = await Question.find({ author: userId })
       .populate({ path: "tags", model: Tag, select: "_id name" })
       .populate({ path: "author", model: User, select: "_id name picture" })
-      .populate({ path: "upvotes", model: User, select: "_id" })
+      .populate({ path: "upvotes", model: User, select: "_id" });
 
     // Sort questions based on the number of upvotes
     questions.sort((a, b) => {
@@ -188,3 +190,20 @@ export async function getUserQuestions(params: GetUserStatsParams) {
   }
 }
 
+export async function deleteQuestion(params:DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, path } = params;
+
+    await Question.findByIdAndDelete(questionId);
+    await Answer.deleteMany({ question: questionId })
+    await Tag.updateMany({ questions: questionId }, { $pull: { questions: questionId } })
+    await User.updateMany({ saved: questionId }, { $pull: { saved: questionId } })
+
+
+    revalidatePath(path);
+  } catch (error) {
+    console.error(error);
+  }
+}

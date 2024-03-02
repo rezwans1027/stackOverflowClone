@@ -20,7 +20,7 @@ export async function viewQuestion(params: ViewQuestionParams) {
       });
 
       if (existingInteraction) {
-        return console.log("User already viewed this question");
+        return 
       }
 
       await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } });

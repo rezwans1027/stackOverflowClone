@@ -5,6 +5,7 @@ import '../styles/prism.css'
 import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
 import { ThemeProvider } from '@/context/ThemeProvider'
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: 'DevOverflow',
@@ -32,18 +33,20 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable}`}
       > <ThemeProvider>
-        <ClerkProvider
-          appearance={{
-            elements: {
-              formButtonPrimary: 'primary-gradient',
-              footerActionLink:
-                'primary-text-gradient hover:text-primary-500'
-            }
-          }}>
-         
+          <ClerkProvider
+            appearance={{
+              elements: {
+                formButtonPrimary: 'primary-gradient',
+                footerActionLink:
+                  'primary-text-gradient hover:text-primary-500'
+              }
+            }}>
+
             {children}
-         
-        </ClerkProvider> </ThemeProvider>
+
+          </ClerkProvider>
+        </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )
