@@ -6,6 +6,7 @@ import Tag from "@/database/tag.model";
 import {
   CreateQuestionParams,
   DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   GetSavedQuestionsParams,
@@ -190,19 +191,87 @@ export async function getUserQuestions(params: GetUserStatsParams) {
   }
 }
 
-export async function deleteQuestion(params:DeleteQuestionParams) {
+export async function deleteQuestion(params: DeleteQuestionParams) {
   try {
     connectToDatabase();
 
     const { questionId, path } = params;
 
     await Question.findByIdAndDelete(questionId);
-    await Answer.deleteMany({ question: questionId })
-    await Tag.updateMany({ questions: questionId }, { $pull: { questions: questionId } })
-    await User.updateMany({ saved: questionId }, { $pull: { saved: questionId } })
-
+    await Answer.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    );
+    await User.updateMany(
+      { saved: questionId },
+      { $pull: { saved: questionId } }
+    );
 
     revalidatePath(path);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    await connectToDatabase();
+
+    const { title, content, tags, questionId, path } = params;
+
+    // Find and update the question's title and content
+    const question = await Question.findByIdAndUpdate(
+      questionId,
+      { $set: { title, content } },
+      { new: true }
+    );
+
+    // Assuming `tags` is an array of tag names to be associated with the question
+    const updatedTagDocs: any[] = [];
+    const currentTagIds = question.tags; // Assuming this is an array of tag IDs currently associated with the question
+
+    // Find or create new tags and add question to them
+    for (const tagName of tags) {
+      const tag = await Tag.findOneAndUpdate(
+        { name: { $regex: new RegExp(`^${tagName}$`, "i") } },
+        {
+          $setOnInsert: { name: tagName },
+          $addToSet: { questions: question._id },
+        },
+        { upsert: true, new: true }
+      );
+
+      updatedTagDocs.push(tag._id);
+    }
+    console.log("current tag ids", currentTagIds);
+    console.log("updated tag docs", updatedTagDocs);
+
+    // Identify tags that were removed
+    const removedTagIds = currentTagIds.filter(
+      (tagId: any) =>
+        !updatedTagDocs
+          .map((updatedId) => updatedId.toString())
+          .includes(tagId.toString())
+    );
+
+    console.log("removed tag ids", removedTagIds);
+
+    // Remove the question from tags that are no longer associated
+    if (removedTagIds.length > 0) {
+      await Tag.updateMany(
+        { _id: { $in: removedTagIds } },
+        { $pull: { questions: question._id } }
+      );
+    }
+
+    // Update the question document with the new set of tags
+    await Question.findByIdAndUpdate(questionId, {
+      $set: { tags: updatedTagDocs },
+    });
+
+    // Revalidate path if necessary
+    await revalidatePath(path);
   } catch (error) {
     console.error(error);
   }

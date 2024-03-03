@@ -11,8 +11,6 @@ const LeftSidebar = () => {
     const pathname = usePathname()
     const { userId } = useAuth();
 
-    console.log(userId)
-
     return (
         <div className='background-light900_dark200 sticky left-0 top-0 flex h-[100vh] w-64 min-w-64 flex-col justify-between 
         p-4 pt-32 text-3xl shadow-light-300 dark:shadow-none max-lg:w-20 max-lg:min-w-20 max-sm:hidden'>

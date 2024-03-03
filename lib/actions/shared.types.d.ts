@@ -86,6 +86,7 @@ export interface DeleteQuestionParams {
 export interface EditQuestionParams {
   questionId: string;
   title: string;
+  tags: string[];
   content: string;
   path: string;
 }

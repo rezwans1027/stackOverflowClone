@@ -19,16 +19,23 @@ import { Input } from "@/components/ui/input"
 import { QuestionsSchema } from "@/lib/validations"
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
-import { createQuestion } from '@/lib/actions/question.action';
+import { createQuestion, editQuestion } from '@/lib/actions/question.action';
 import { useTheme } from '@/context/ThemeProvider';
 
-const type: string = 'post'
+
 
 interface props {
     mongoUserId: string
+    type: string
+    params?: any
+    currentValues?: {
+        title: string,
+        explanation: string,
+        tags: string[]
+    }
 }
 
-const Question = ({ mongoUserId }: props) => {
+const Question = ({ mongoUserId, type, params, currentValues }: props) => {
     const { mode } = useTheme()
     const editorRef = useRef(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,11 +46,12 @@ const Question = ({ mongoUserId }: props) => {
     const form = useForm<z.infer<typeof QuestionsSchema>>({
         resolver: zodResolver(QuestionsSchema),
         defaultValues: {
-            title: "",
-            explanation: "",
-            tags: [],
+            title: currentValues?.title || "",
+            explanation: currentValues?.explanation || "",
+            tags: currentValues?.tags || [],
         },
     })
+
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
@@ -51,14 +59,23 @@ const Question = ({ mongoUserId }: props) => {
         try {
             // make async call to API to create a question
             // contain all form data
-
-            await createQuestion({
-                title: values.title,
-                content: values.explanation,
-                tags: values.tags,
-                author: JSON.parse(mongoUserId),
-                path: pathname
-            })
+            if (type === 'edit') {
+                await editQuestion({
+                    title: values.title,
+                    content: values.explanation,
+                    tags: values.tags,
+                    questionId: params.id,
+                    path: pathname
+                })
+            } else {
+                await createQuestion({
+                    title: values.title,
+                    content: values.explanation,
+                    tags: values.tags,
+                    author: JSON.parse(mongoUserId),
+                    path: pathname
+                })
+            }
 
             router.push('/')
 
@@ -137,7 +154,7 @@ const Question = ({ mongoUserId }: props) => {
                                     onInit={(evt, editor) => editorRef.current = editor}
                                     onBlur={field.onBlur}
                                     onEditorChange={(content) => field.onChange(content)}
-                                    initialValue=""
+                                    initialValue={currentValues?.explanation || ""}
                                     init={{
                                         height: 500,
                                         menubar: false,
