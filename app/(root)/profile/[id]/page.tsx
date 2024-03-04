@@ -23,6 +23,7 @@ const page = async ({ params, searchParams }: any) => {
 
     const { answers, totalAnswerPages } = await getUserAnswers({ userId: user._id, page: searchParams.page || 1, pageSize: 5 }) as { answers: any[]; totalAnswerPages: number }
 
+
     return (
         <div>
             <div className='flex justify-between gap-4 max-sm:flex-col-reverse'>
@@ -34,10 +35,15 @@ const page = async ({ params, searchParams }: any) => {
                         <h4 className='dark:text-white'>@{user.username}</h4>
 
                         <div className='mt-4 flex flex-wrap items-center gap-3'>
-                            {user.porfolioWebsite && <div className='flex items-center gap-1'>
-                                <Image src='/assets/icons/link.svg' width={20} height={20} alt='link' />
-                                <Link href={user.porfolioWebsite} className='text-blue-500'>{user.portfolioWebsite}</Link>
-                            </div>}
+                            {user.portfolioWebsite &&
+                                <div className='flex w-fit items-center gap-1'>
+                                    <Image src='/assets/icons/link.svg' width={20} height={20} alt='link' className='flex w-fit' />
+                                    <Link href={user.portfolioWebsite} className='w-full text-blue-500'>
+                                        <p className='line-clamp w-full'>
+                                            {user.portfolioWebsite}
+                                        </p>
+                                    </Link>
+                                </div>}
                             {user.location && <div className='flex gap-1'>
                                 <Image src='/assets/icons/location.svg' width={20} height={20} alt='location' />
                                 <div className='dark:text-white'>{user.location}</div>
@@ -47,17 +53,22 @@ const page = async ({ params, searchParams }: any) => {
                                 <div className='dark:text-white'>Joined {getMonthAndYear(user.joinedAt)}</div>
                             </div>
                         </div>
-                        <h3 className='mt-5 dark:text-white'>{user.bio}</h3>
+                        <h3 className='mt-5 dark:text-white xl:hidden'>{user.bio}</h3>
                     </div>
+                    <h3></h3>
                 </div>
+                
 
 
                 {userId === params.id && <div className='ml-auto'>
-                    <Button className="background-light750_dark300 min-h-[46px] px-6 py-3 dark:text-white  ">Edit Profile</Button>
+                    <Link href={`${params.id}/edit`}>
+                        <Button className="background-light750_dark300 min-h-[46px] px-6 py-3 dark:text-white  ">Edit Profile</Button>
+                    </Link>
                 </div>}
 
 
             </div>
+            <h3 className='mt-5 dark:text-white max-xl:hidden'>{user.bio}</h3>
 
             <div className='mb-10'>
                 <h1 className='h3-bold my-6 dark:text-white'>Stats</h1>
@@ -77,7 +88,7 @@ const page = async ({ params, searchParams }: any) => {
                 </TabsList>
                 <TabsContent value="account" >
                     <div className='mt-8'>
-                        {questions.length && <div className='flex flex-col gap-6'>
+                        {questions.length ? <div className='flex flex-col gap-6'>
                             {questions.map((question: any) => (
                                 <QuestionCard
                                     key={question._id}
@@ -95,12 +106,12 @@ const page = async ({ params, searchParams }: any) => {
 
                             <PaginationBar searchParams={searchParams} totalPages={totalPages} />
 
-                        </div>}
+                        </div> : <p className='text-dark300_light700'></p>}
                     </div>
                 </TabsContent>
                 <TabsContent value="password">
                     <div className='mt-8'>
-                        {answers.length && <div className='flex flex-col gap-6'>
+                        {answers.length ? <div className='flex flex-col gap-6'>
                             {answers.map((answer: any) => (
                                 <AnswerCard
                                     key={answer._id}
@@ -115,7 +126,7 @@ const page = async ({ params, searchParams }: any) => {
                             ))}
                             <PaginationBar searchParams={searchParams} totalPages={totalAnswerPages} />
 
-                        </div>}
+                        </div> : <p className='text-dark300_light700'></p>}
                     </div>
                 </TabsContent>
             </Tabs>

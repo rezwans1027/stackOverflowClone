@@ -31,7 +31,7 @@ const LeftSidebar = () => {
                 <SignedIn>
                 <div >
                             <Link href={`/profile/${userId}`} className={`flex items-center gap-4 rounded-lg p-4 
-                        ${pathname.includes('/profile') && 'bg-primary-500 font-bold text-white'} max-lg:p-[0.9rem]`}>
+                        ${userId && pathname.includes(userId) && 'bg-primary-500 font-bold text-white'} max-lg:p-[0.9rem]`}>
                                 <Image src={'/assets/icons/user.svg'} width={20} height={20} alt='link' className='invert-colors' />
                                 <p className='text-xl dark:text-white max-lg:hidden'>{'Profile'}</p>
                             </Link>

@@ -244,8 +244,6 @@ export async function editQuestion(params: EditQuestionParams) {
 
       updatedTagDocs.push(tag._id);
     }
-    console.log("current tag ids", currentTagIds);
-    console.log("updated tag docs", updatedTagDocs);
 
     // Identify tags that were removed
     const removedTagIds = currentTagIds.filter(
@@ -254,8 +252,6 @@ export async function editQuestion(params: EditQuestionParams) {
           .map((updatedId) => updatedId.toString())
           .includes(tagId.toString())
     );
-
-    console.log("removed tag ids", removedTagIds);
 
     // Remove the question from tags that are no longer associated
     if (removedTagIds.length > 0) {

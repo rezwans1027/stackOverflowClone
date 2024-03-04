@@ -99,14 +99,12 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
     const user = await User.findById(userId);
 
     if (!user.saved.includes(questionId)) {
-      console.log("option 2");
       await User.findByIdAndUpdate(
         userId,
         { $push: { saved: questionId } },
         { new: true }
       );
     } else {
-      console.log("option 1");
       await User.findByIdAndUpdate(
         userId,
         { $pull: { saved: questionId } },
@@ -127,10 +125,54 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const { userId } = params;
 
     const user = await User.findOne({ clerkId: userId });
-    const totalQuestions = await Question.countDocuments({ author: user._id })
-    const totalAnswers = await Answer.countDocuments({ author: user._id })
+    const totalQuestions = await Question.countDocuments({ author: user._id });
+    const totalAnswers = await Answer.countDocuments({ author: user._id });
 
     return { user, totalQuestions, totalAnswers };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getUserProfile(params: GetUserByIdParams) {
+  try {
+    connectToDatabase();
+
+    const { userId } = params;
+
+    const user = await User.findOne({ clerkId: userId }).select(
+      "clerkId name username bio location portfolioWebsite"
+    );
+
+    return { user };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateUserProfile(userData: UpdateUserParams) {
+  try {
+    connectToDatabase();
+
+    const { clerkId, updateData, path } = userData;
+
+    const { name, username, portfolioWebsite, location, bio } = updateData;
+
+
+    await User.findOneAndUpdate(
+      { clerkId },
+      {
+        $set: {
+          name,
+          username,
+          portfolioWebsite,
+          location,
+          bio,
+        },
+      }
+    );
+
+    revalidatePath(path);
   } catch (error) {
     console.error(error);
   }
