@@ -18,7 +18,14 @@ export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 
-    const users = await User.find({}).sort({ joinedAt: -1 });
+    const { searchQuery = "" } = params;
+
+    const users = await User.find({
+      $or: [
+        { name: { $regex: searchQuery, $options: "i" } },
+        { username: { $regex: searchQuery, $options: "i" } },
+      ],
+    });
     return { users };
   } catch (error) {
     console.error(error);
@@ -157,7 +164,6 @@ export async function updateUserProfile(userData: UpdateUserParams) {
     const { clerkId, updateData, path } = userData;
 
     const { name, username, portfolioWebsite, location, bio } = updateData;
-
 
     await User.findOneAndUpdate(
       { clerkId },

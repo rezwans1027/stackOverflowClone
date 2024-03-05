@@ -32,7 +32,13 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const tags = await Tag.find({});
+    const { searchQuery='' } = params;
+
+    console.log(searchQuery)
+
+    const tags = await Tag.find({
+      name: { $regex: new RegExp(searchQuery, "i") },
+    });
 
     return {tags};
 
@@ -58,11 +64,11 @@ export async function getQuestionsByTag(params: GetQuestionsByTagIdParams) {
   try {
     connectToDatabase();
 
-    const { tagId, searchQuery } = params;
+    const { tagId, searchQuery='' } = params;
 
     const tag = await Tag.findById(tagId).populate({
       path: "questions",
-      match: searchQuery ? { title: { $regex: new RegExp(searchQuery, "i") } } : {},
+      match: { title: { $regex: new RegExp(searchQuery, "i") } },
       model: Question,
       populate: [
         { path: "tags", model: Tag, select: "_id name" },
@@ -92,8 +98,7 @@ export async function getPopularTags () {
       { $sort: { questionsCount: -1, followersCount: -1 } },
       { $limit: 5 },
       { $project: { followersCount: 0 } }
-    ]);
-    console.log(tags)
+    ])
 
     return tags;
 

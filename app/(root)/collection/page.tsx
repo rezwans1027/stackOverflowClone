@@ -8,11 +8,11 @@ import { getSavedQuestions } from '@/lib/actions/question.action'
 import { auth } from '@clerk/nextjs'
 import React from 'react'
 
-const Page = async () => {
+const Page = async ({searchParams}: {searchParams: string}) => {
 
 const { userId } = auth()
 
-  const result = await getSavedQuestions({ clerkId: userId! })
+  const result = await getSavedQuestions({clerkId: userId!, searchQuery: searchParams.search?.toString() || ''})
 
   return (
     <>

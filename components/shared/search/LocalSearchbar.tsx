@@ -2,7 +2,8 @@
 
 import { Input } from '@/components/ui/input'
 import Image from 'next/image'
-import React from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
 interface CustomInputProps {
     route: string
@@ -20,10 +21,34 @@ const LocalSearchBar = ({
     otherClasses,
 }: CustomInputProps) => {
 
+    const router = useRouter();
+    const pathname = usePathname()
+    const searchParams = useSearchParams();
+    const [inputValue, setInputValue] = useState(searchParams.get('search') || '')
 
+    useEffect(() => {
+        const debounce = setTimeout(() => {
+            const params = new URLSearchParams(searchParams);
+            if (inputValue) {
+                params.set('search', inputValue);
+                router.replace(pathname + `?${params.toString()}`)
+            } else {
+                params.delete('search');
+                router.replace(pathname + `?${params.toString()}`)
+            }
+        }, 350)
+
+        return () => clearTimeout(debounce)
+
+    }, [searchParams, pathname, router, setInputValue, inputValue])
+
+    const handleInputChange = (e:any) => {
+        const value = e.target.value;
+        setInputValue(value);
+
+    };
 
     return (
-
         <div className={`background-light700_dark300  flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}>
 
             {iconPosition === 'left' && (<Image
@@ -33,12 +58,12 @@ const LocalSearchBar = ({
                 height={20}
                 className='cursor-pointer'
             />)}
-            <Input 
-            type='text'
-            placeholder={placeholder}
-            value=''
-            onChange={() => {}}
-            className='paragraph-regular no-focus placeholder background-light700_dark300 border-none shadow-none outline-none'
+            <Input
+                type='text'
+                placeholder={placeholder}
+                value={inputValue}
+                onChange={(e) => handleInputChange(e)}
+                className='paragraph-regular no-focus placeholder background-light700_dark300 border-none shadow-none outline-none'
             />
         </div>
     )

@@ -53,16 +53,32 @@ export async function createQuestion(params: CreateQuestionParams) {
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase(); // Assuming this function establishes a MongoDB connection
 
-    const questions = await Question.find({})
-      .populate({ path: "tags", model: Tag })
-      .populate({ path: "author", model: User })
-      .sort({ createdAt: -1 });
+    const { searchQuery="" } = params; // Use the search query from parameters
+
+    // First, try a full-text search
+
+    let questions = await Question.find({ $text: { $search: searchQuery } })
+      .populate({ path: "tags", model: "Tag" }) // Ensure the model name is a string
+      .populate({ path: "author", model: "User" }); // Ensure the model name is a string
+
+    // If the full-text search returns no results, fall back to regex search
+    if (questions.length === 0) {
+      questions = await Question.find({
+        $or: [
+            { title: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive regex search in title
+            { content: { $regex: searchQuery, $options: 'i' } } // Case-insensitive regex search in content
+        ]
+    })
+        .populate({ path: "tags", model: "Tag" })
+        .populate({ path: "author", model: "User" });
+    }
 
     return { questions };
   } catch (error) {
     console.error(error);
+    throw error; // It might be useful to re-throw the error or handle it as per your error handling policy
   }
 }
 
@@ -278,7 +294,7 @@ export async function getTopQuestions() {
     connectToDatabase();
 
     const questions = await Question.find({})
-      .select('_id title')
+      .select("_id title")
       .sort({ upvotes: -1, views: -1 })
       .limit(5);
 

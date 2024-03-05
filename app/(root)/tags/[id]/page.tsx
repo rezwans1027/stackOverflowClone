@@ -5,9 +5,9 @@ import { getQuestionsByTag } from '@/lib/actions/tag.actions'
 import { URLProps } from '@/types'
 import React from 'react'
 
-const Page = async ({params}:URLProps) => {
+const Page = async ({params, searchParams }:URLProps) => {
 
-  const result = await getQuestionsByTag({ tagId: params.id });
+  const result = await getQuestionsByTag({ tagId: params.id, searchQuery: searchParams.search?.toString() || ''});
 
   return (
     <>

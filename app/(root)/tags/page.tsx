@@ -6,9 +6,9 @@ import { getAllTags } from '@/lib/actions/tag.actions'
 import Link from 'next/link'
 import React from 'react'
 
-const page = async () => {
+const page = async ({searchParams}: {searchParams: string}) => {
 
-    const result = await getAllTags({})
+    const result = await getAllTags({searchQuery: searchParams.search?.toString() || ''})
 
     return (
         <>

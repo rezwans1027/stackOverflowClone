@@ -24,6 +24,8 @@ const QuestionSchema = new Schema<IQuestion>({
   createdAt: { type: Date, default: Date.now },
 });
 
+QuestionSchema.index({ title: 'text' });
+
 const Question = models.Question || model<IQuestion>("Question", QuestionSchema);
 
 export default Question;

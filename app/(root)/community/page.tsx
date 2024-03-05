@@ -6,9 +6,9 @@ import { UserFilters } from '@/constants/filters'
 import { getAllUsers } from '@/lib/actions/user.action'
 import React from 'react'
 
-const page = async () => {
+const page = async ({searchParams}: {searchParams: string}) => {
 
-  const result = await getAllUsers({})
+  const result = await getAllUsers({searchQuery: searchParams.search?.toString() || ''})
 
   return (
     <>
