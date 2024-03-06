@@ -55,7 +55,7 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase(); // Assuming this function establishes a MongoDB connection
 
-    const { searchQuery = "", filter = "" } = params; // Use the search query from parameters
+    const { searchQuery = "", filter = "", page = 1, pageSize = 3 } = params; // Use the search query from parameters
 
     interface query {
       $text?: { $search: string };
@@ -93,20 +93,30 @@ export async function getQuestions(params: GetQuestionsParams) {
         break;
     }
 
+    let totalDocuments = await Question.countDocuments(baseQuery);
+
     let questions = await Question.find(baseQuery)
       .populate({ path: "tags", model: "Tag" })
       .populate({ path: "author", model: "User" })
-      .sort(sort);
+      .sort(sort)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
 
     // If the full-text search returns no results, fall back to regex search
     if (questions.length === 0) {
+      totalDocuments = await Question.countDocuments(regexQuery);
+
       questions = await Question.find(regexQuery)
         .populate({ path: "tags", model: "Tag" })
         .populate({ path: "author", model: "User" })
-        .sort(sort);
+        .sort(sort)
+        .skip((page - 1) * pageSize)
+        .limit(pageSize);
     }
 
-    return { questions };
+    const totalPages = Math.ceil(totalDocuments / pageSize);
+
+    return { questions, totalPages };
   } catch (error) {
     console.error(error);
     throw error; // It might be useful to re-throw the error or handle it as per your error handling policy
@@ -176,12 +186,11 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
 
-    const { clerkId, searchQuery, filter } = params;
+    const { clerkId, searchQuery, filter, page = 1, pageSize = 2 } = params;
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
-
 
     let sort = {};
 
@@ -205,7 +214,14 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         break;
     }
 
-    console.log(sort);
+    const user = await User.findOne({ clerkId });
+
+    const totalDocuments = await Question.countDocuments({
+      _id: { $in: user.saved },
+      ...query
+    })
+
+    const totalPages = Math.ceil(totalDocuments / pageSize);
 
     const users = await User.aggregate([
       { $match: { clerkId } },
@@ -224,6 +240,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
               },
             },
             ...(filter ? [{ $sort: sort }] : []), // Sort by upvotesCount in descending order
+            { $skip: (page - 1) * pageSize },
+            { $limit: pageSize },
             {
               $lookup: {
                 from: "tags",
@@ -244,20 +262,31 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
             },
             { $unwind: "$author" },
             {
-              $project: { _id: 1, title: 1, createdAt: 1, upvotes: 1, views: 1, tags: 1, author: 1, answers: 1, upvotesCount: 1 },
+              $project: {
+                _id: 1,
+                title: 1,
+                createdAt: 1,
+                upvotes: 1,
+                views: 1,
+                tags: 1,
+                author: 1,
+                answers: 1,
+                upvotesCount: 1,
+              },
             },
           ],
         },
       },
     ]);
 
-    const user = users[0];
+    const savedQuestions = users[0].saved;
 
-    return user.saved;
+    return { savedQuestions, totalPages };
   } catch (error) {
     console.error(error);
   }
 }
+
 
 export async function getUserQuestions(params: GetUserStatsParams) {
   try {

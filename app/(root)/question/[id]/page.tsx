@@ -1,5 +1,6 @@
 import Answer from '@/components/forms/Answer';
 import AllAnswers from '@/components/shared/AllAnswers';
+import PaginationBar from '@/components/shared/PaginationBar';
 import ParseHTML from '@/components/shared/ParseHTML';
 import RenderTag from '@/components/shared/RenderTag';
 import Votes from '@/components/shared/Votes';
@@ -79,7 +80,9 @@ const Page = async ({ params, searchParams }: URLProps) => {
                 ))}
             </div>
 
-            <AllAnswers questionId={result._id} totalAnswers={result.answers.length} filter={searchParams.filter?.toString() || ''} />
+            <AllAnswers questionId={result._id} totalAnswers={result.answers.length} filter={searchParams.filter?.toString() || ''} page={parseInt(searchParams.page || '1')} />
+
+            <PaginationBar searchParams={searchParams} totalPages={Math.ceil(result.answers.length / 10)} />
 
             <Answer mongoUserId={mongoUser?._id.toString()} questionId={result._id.toString()} />
 

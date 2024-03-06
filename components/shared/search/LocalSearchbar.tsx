@@ -29,20 +29,27 @@ const LocalSearchBar = ({
     useEffect(() => {
         const debounce = setTimeout(() => {
             const params = new URLSearchParams(searchParams);
-            if (inputValue) {
-                params.set('search', inputValue);
+            const currentValue = searchParams.get('search') || '';
+
+            if (currentValue !== inputValue) {
+
+                if (inputValue) {
+                    params.set('search', inputValue);
+                } else {
+                    params.delete('search');
+                }
+                params.delete('page');
                 router.replace(pathname + `?${params.toString()}`)
-            } else {
-                params.delete('search');
-                router.replace(pathname + `?${params.toString()}`)
-            }
+
+            };
+
         }, 350)
 
         return () => clearTimeout(debounce)
 
     }, [searchParams, pathname, router, setInputValue, inputValue])
 
-    const handleInputChange = (e:any) => {
+    const handleInputChange = (e: any) => {
         const value = e.target.value;
         setInputValue(value);
 

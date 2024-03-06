@@ -12,7 +12,7 @@ const scrollToTop = () => {
 
 const PaginationBar = ({ searchParams, totalPages }:any) => {
     return (
-        <div>
+        <div >
             <Pagination className='mt-4'>
     <PaginationContent className='dark:text-white'>
         <PaginationItem className='background-light750_dark300 mr-4 rounded-md px-3 py-1'>

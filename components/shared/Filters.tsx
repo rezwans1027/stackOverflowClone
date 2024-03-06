@@ -29,20 +29,22 @@ const Filters = ({ filters, spread }: Props) => {
     const [filterValue, setFilterValue] = useState(searchParams.get('filter') || '')
     const [open, setOpen] = useState(false)
 
-
     useEffect(() => {
-
         const params = new URLSearchParams(searchParams);
-
-        if (filterValue && filterValue !== 'none') {
-            params.set('filter', filterValue);
-            router.replace(pathname + `?${params.toString()}`, { scroll: false })
-        } else {
-            params.delete('filter');
-            router.replace(pathname + `?${params.toString()}`, { scroll: false })
+        const currentFilter = params.get('filter') || '';
+    
+        if (filterValue !== currentFilter) {
+            if (filterValue && filterValue !== 'none') {
+                params.set('filter', filterValue);
+            } else {
+                params.delete('filter');
+            }
+    
+            params.delete('page');
+            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+            
         }
-
-    }, [searchParams, pathname, router, setFilterValue, filterValue])
+    }, [searchParams, pathname, router, filterValue]);
 
     return (
         <>

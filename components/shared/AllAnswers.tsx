@@ -15,18 +15,17 @@ interface props {
     totalAnswers: number
     page?: number
     filter?: string
+    searchParams?: string
 }
 
 
-const AllAnswers = async ({ questionId, totalAnswers, filter }: props) => {
+const AllAnswers = async ({ questionId, totalAnswers, filter, page, searchParams }: props) => {
 
     const { userId } = auth()
 
     const mongoUser = await getUserById({ userId: userId! })
 
-    console.log('filter', filter)
-
-    const result = await getAnswersByQuestionId({ questionId, sortBy: filter })
+    const result = await getAnswersByQuestionId({ questionId, sortBy: filter, page, pageSize: 10 })
 
     return (
         <div className='mt-11'>
@@ -71,6 +70,8 @@ const AllAnswers = async ({ questionId, totalAnswers, filter }: props) => {
                     </div>
                 </article>
             ))}
+
+            
 
         </div>
     )

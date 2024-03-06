@@ -18,7 +18,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 
-    const { searchQuery = "", filter="" } = params;
+    const { searchQuery = "", filter = "", page = 1, pageSize = 1 } = params;
 
     let sort = {};
 
@@ -36,13 +36,22 @@ export async function getAllUsers(params: GetAllUsersParams) {
         break;
     }
 
-    const users = await User.find({
+    const query = {
       $or: [
         { name: { $regex: searchQuery, $options: "i" } },
         { username: { $regex: searchQuery, $options: "i" } },
       ],
-    }).sort(sort);
-    return { users };
+    };
+
+    const totalDocuments = await User.countDocuments(query);
+    const totalPages = Math.ceil(totalDocuments / pageSize);
+
+    const users = await User.find(query)
+      .sort(sort)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    return { users, totalPages };
   } catch (error) {
     console.error(error);
   }

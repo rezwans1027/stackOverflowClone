@@ -33,9 +33,8 @@ export async function getAnswersByQuestionId(params: GetAnswersParams) {
   try {
     connectToDatabase();
 
-    const { questionId, sortBy } = params;
+    const { questionId, sortBy, page = 1, pageSize = 1 } = params;
 
-    console.log("sortBy", sortBy);
 
     let sort = {};
 
@@ -63,7 +62,9 @@ export async function getAnswersByQuestionId(params: GetAnswersParams) {
         model: User,
         select: "_id clerkId name picture",
       })
-      .sort(sort);
+      .sort(sort)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
 
     return { answers };
   } catch (error) {
