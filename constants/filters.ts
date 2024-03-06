@@ -21,8 +21,8 @@ export const AnswerFilters = [
   
   export const TagFilters = [
     { name: "Popular", value: "popular" },
-    { name: "Recent", value: "recent" },
     { name: "Name", value: "name" },
+    { name: "Recent", value: "recent" },
     { name: "Old", value: "old" },
   ];
   

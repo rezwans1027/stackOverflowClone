@@ -18,14 +18,30 @@ export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 
-    const { searchQuery = "" } = params;
+    const { searchQuery = "", filter="" } = params;
+
+    let sort = {};
+
+    switch (filter) {
+      case "new_users":
+        sort = { joinedAt: -1 };
+        break;
+      case "old_users":
+        sort = { joinedAt: 1 };
+        break;
+      case "top_contributors":
+        sort = { reputation: -1 };
+        break;
+      default:
+        break;
+    }
 
     const users = await User.find({
       $or: [
         { name: { $regex: searchQuery, $options: "i" } },
         { username: { $regex: searchQuery, $options: "i" } },
       ],
-    });
+    }).sort(sort);
     return { users };
   } catch (error) {
     console.error(error);

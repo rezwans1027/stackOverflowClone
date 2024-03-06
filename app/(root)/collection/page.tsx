@@ -5,14 +5,15 @@ import NoResult from '@/components/shared/NoResult'
 import LocalSearchBar from '@/components/shared/search/LocalSearchbar'
 import { QuestionFilters } from '@/constants/filters'
 import { getSavedQuestions } from '@/lib/actions/question.action'
+import { URLProps } from '@/types'
 import { auth } from '@clerk/nextjs'
 import React from 'react'
 
-const Page = async ({searchParams}: {searchParams: string}) => {
+const Page = async ({searchParams}: URLProps) => {
 
 const { userId } = auth()
 
-  const result = await getSavedQuestions({clerkId: userId!, searchQuery: searchParams.search?.toString() || ''})
+  const result = await getSavedQuestions({clerkId: userId!, searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || ''})
 
   return (
     <>

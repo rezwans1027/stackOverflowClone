@@ -18,13 +18,15 @@ interface props {
 }
 
 
-const AllAnswers = async ({ questionId, totalAnswers }: props) => {
+const AllAnswers = async ({ questionId, totalAnswers, filter }: props) => {
 
     const { userId } = auth()
 
     const mongoUser = await getUserById({ userId: userId! })
 
-    const result = await getAnswersByQuestionId({ questionId })
+    console.log('filter', filter)
+
+    const result = await getAnswersByQuestionId({ questionId, sortBy: filter })
 
     return (
         <div className='mt-11'>

@@ -6,12 +6,13 @@ import Votes from '@/components/shared/Votes';
 import { getQuestionById } from '@/lib/actions/question.action';
 import { getUserById } from '@/lib/actions/user.action';
 import { formatAndDivideNumber, getTimestamp } from '@/lib/utils';
+import { URLProps } from '@/types';
 import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 
-const Page = async ({ params, searchParams }: any) => {
+const Page = async ({ params, searchParams }: URLProps) => {
     const result = await getQuestionById({ questionId: params.id });
     const { userId } = auth()
 
@@ -78,7 +79,7 @@ const Page = async ({ params, searchParams }: any) => {
                 ))}
             </div>
 
-            <AllAnswers questionId={result._id} totalAnswers={result.answers.length} />
+            <AllAnswers questionId={result._id} totalAnswers={result.answers.length} filter={searchParams.filter?.toString() || ''} />
 
             <Answer mongoUserId={mongoUser?._id.toString()} questionId={result._id.toString()} />
 

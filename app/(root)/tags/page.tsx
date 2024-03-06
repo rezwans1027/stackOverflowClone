@@ -1,14 +1,15 @@
 import Filters from '@/components/shared/Filters'
 import NoResult from '@/components/shared/NoResult'
 import LocalSearchBar from '@/components/shared/search/LocalSearchbar'
-import { UserFilters } from '@/constants/filters'
+import { TagFilters } from '@/constants/filters'
 import { getAllTags } from '@/lib/actions/tag.actions'
+import { URLProps } from '@/types'
 import Link from 'next/link'
 import React from 'react'
 
-const page = async ({searchParams}: {searchParams: string}) => {
+const page = async ({searchParams}:URLProps) => {
 
-    const result = await getAllTags({searchQuery: searchParams.search?.toString() || ''})
+    const result = await getAllTags({searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || ''  })
 
     return (
         <>
@@ -26,7 +27,7 @@ const page = async ({searchParams}: {searchParams: string}) => {
                 />
 
                 <Filters
-                    filters={UserFilters}
+                    filters={TagFilters}
                     spread={false}
                 />
             </div>

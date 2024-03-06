@@ -55,24 +55,55 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase(); // Assuming this function establishes a MongoDB connection
 
-    const { searchQuery="" } = params; // Use the search query from parameters
+    const { searchQuery = "", filter = "" } = params; // Use the search query from parameters
 
-    // First, try a full-text search
+    interface query {
+      $text?: { $search: string };
+      answers?: { $size: number };
+      $or?: Array<{
+        title?: { $regex: string; $options: string };
+        content?: { $regex: string; $options: string };
+      }>;
+    }
 
-    let questions = await Question.find({ $text: { $search: searchQuery } })
-      .populate({ path: "tags", model: "Tag" }) // Ensure the model name is a string
-      .populate({ path: "author", model: "User" }); // Ensure the model name is a string
+    let sort = {};
+    const baseQuery: query = { $text: { $search: searchQuery } };
+    const regexQuery: query = {
+      $or: [
+        { title: { $regex: searchQuery, $options: "i" } },
+        { content: { $regex: searchQuery, $options: "i" } },
+      ],
+    };
+
+    switch (filter) {
+      case "newest":
+        sort = { createdAt: -1 };
+        break;
+      case "recommended":
+        sort = { upvotes: -1, views: -1, createdAt: -1 };
+        break;
+      case "frequent":
+        sort = { views: -1 };
+        break;
+      case "unanswered":
+        baseQuery.answers = { $size: 0 };
+        regexQuery.answers = { $size: 0 };
+        break;
+      default:
+        break;
+    }
+
+    let questions = await Question.find(baseQuery)
+      .populate({ path: "tags", model: "Tag" })
+      .populate({ path: "author", model: "User" })
+      .sort(sort);
 
     // If the full-text search returns no results, fall back to regex search
     if (questions.length === 0) {
-      questions = await Question.find({
-        $or: [
-            { title: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive regex search in title
-            { content: { $regex: searchQuery, $options: 'i' } } // Case-insensitive regex search in content
-        ]
-    })
+      questions = await Question.find(regexQuery)
         .populate({ path: "tags", model: "Tag" })
-        .populate({ path: "author", model: "User" });
+        .populate({ path: "author", model: "User" })
+        .sort(sort);
     }
 
     return { questions };
@@ -145,22 +176,82 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
 
-    const { clerkId, searchQuery } = params;
+    const { clerkId, searchQuery, filter } = params;
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
 
-    const user = await User.findOne({ clerkId }).populate({
-      path: "saved",
-      match: query,
-      model: Question,
-      populate: [
-        { path: "tags", model: Tag, select: "_id name" },
-        { path: "author", model: User, select: "_id name picture" },
-      ],
-      select: "_id title createdAt upvotes views answers",
-    });
+
+    let sort = {};
+
+    switch (filter) {
+      case "most_recent":
+        sort = { createdAt: -1 };
+        break;
+      case "oldest":
+        sort = { createdAt: 1 };
+        break;
+      case "most_viewed":
+        sort = { views: -1 };
+        break;
+      case "most_answered":
+        sort = { answersCount: -1 };
+        break;
+      case "most_voted":
+        sort = { upvotesCount: -1 };
+        break;
+      default:
+        break;
+    }
+
+    console.log(sort);
+
+    const users = await User.aggregate([
+      { $match: { clerkId } },
+      {
+        $lookup: {
+          from: "questions",
+          localField: "saved",
+          foreignField: "_id",
+          as: "saved",
+          pipeline: [
+            { $match: query },
+            {
+              $addFields: {
+                upvotesCount: { $size: "$upvotes" },
+                answersCount: { $size: "$answers" },
+              },
+            },
+            ...(filter ? [{ $sort: sort }] : []), // Sort by upvotesCount in descending order
+            {
+              $lookup: {
+                from: "tags",
+                localField: "tags",
+                foreignField: "_id",
+                as: "tags",
+                pipeline: [{ $project: { _id: 1, name: 1 } }],
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "author",
+                foreignField: "_id",
+                as: "author",
+                pipeline: [{ $project: { _id: 1, name: 1, picture: 1 } }],
+              },
+            },
+            { $unwind: "$author" },
+            {
+              $project: { _id: 1, title: 1, createdAt: 1, upvotes: 1, views: 1, tags: 1, author: 1, answers: 1, upvotesCount: 1 },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const user = users[0];
 
     return user.saved;
   } catch (error) {

@@ -37,7 +37,7 @@ const QuestionCard = ({
     return (
         <div className='card-wrapper rounded-lg p-8 '>
             <div className='mb-4 flex items-center justify-between'>
-                <Link href={`/question/${_id}`} className='w-full'>
+                <Link href={`/question/${_id}`} className='z-[0] w-full'>
                     <p className='h3-bold text-dark200_light900 line-clamp mx-0 w-full px-0'>{title}</p>
                 </Link>
                 {showEdit && <div className='ml-4 flex gap-2'>

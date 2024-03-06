@@ -5,12 +5,13 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
+import { URLProps } from "@/types";
 import Link from "next/link";
 
 
-export default async function Home({searchParams}: {searchParams: string}) {
+export default async function Home({searchParams}: URLProps) {
 
-  const result = await getQuestions({searchQuery: searchParams.search?.toString() || ''})
+  const result = await getQuestions({searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || ''})
 
   return (
     <>
@@ -22,7 +23,7 @@ export default async function Home({searchParams}: {searchParams: string}) {
         </Link>
       </div>
 
-      <div className="mt-11 justify-between gap-5 max-sm:flex-col sm:items-center sm:max-md:flex md:gap-28">
+      <div className="mt-11 justify-between gap-5 sm:items-center sm:max-md:flex md:gap-28">
         <LocalSearchbar
           route='/'
           iconPosition='left'

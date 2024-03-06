@@ -4,11 +4,12 @@ import NoResult from '@/components/shared/NoResult'
 import LocalSearchBar from '@/components/shared/search/LocalSearchbar'
 import { UserFilters } from '@/constants/filters'
 import { getAllUsers } from '@/lib/actions/user.action'
+import { URLProps } from '@/types'
 import React from 'react'
 
-const page = async ({searchParams}: {searchParams: string}) => {
+const page = async ({searchParams}: URLProps) => {
 
-  const result = await getAllUsers({searchQuery: searchParams.search?.toString() || ''})
+  const result = await getAllUsers({searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || ''})
 
   return (
     <>

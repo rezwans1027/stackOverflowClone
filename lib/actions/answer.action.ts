@@ -33,7 +33,29 @@ export async function getAnswersByQuestionId(params: GetAnswersParams) {
   try {
     connectToDatabase();
 
-    const { questionId } = params;
+    const { questionId, sortBy } = params;
+
+    console.log("sortBy", sortBy);
+
+    let sort = {};
+
+    switch (sortBy) {
+      case "recent":
+        sort = { createdAt: -1 };
+        break;
+      case "old":
+        sort = { createdAt: 1 };
+        break;
+      case "highestUpvotes":
+        sort = { upvotes: -1 };
+        break;
+      case "lowestUpvotes":
+        sort = { upvotes: 1 };
+        break;
+      default:
+        sort = { createdAt: -1, upvoted: -1 };
+        break;
+    }
 
     const answers = await Answer.find({ question: questionId })
       .populate({
@@ -41,7 +63,7 @@ export async function getAnswersByQuestionId(params: GetAnswersParams) {
         model: User,
         select: "_id clerkId name picture",
       })
-      .sort({ createdAt: -1 });
+      .sort(sort);
 
     return { answers };
   } catch (error) {
