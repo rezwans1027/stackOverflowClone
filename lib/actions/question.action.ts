@@ -352,21 +352,8 @@ export async function getUserQuestions(params: GetUserStatsParams) {
     let questions = await Question.find({ author: userId })
       .populate({ path: "tags", model: Tag, select: "_id name" })
       .populate({ path: "author", model: User, select: "_id name picture" })
-      .populate({ path: "upvotes", model: User, select: "_id" });
-
-    // Sort questions based on the number of upvotes
-    questions.sort((a, b) => {
-      const upvotesCountA = a.upvotes.length;
-      const upvotesCountB = b.upvotes.length;
-      const upvotesSort = upvotesCountB - upvotesCountA;
-
-      // If upvotes count is equal, sort by views count
-      if (upvotesSort === 0) {
-        return b.views - a.views; // Sort in descending order
-      }
-
-      return upvotesSort;
-    });
+      .populate({ path: "upvotes", model: User, select: "_id" })
+      .sort({ createdAt: -1, views: -1, upvotes: -1 });
 
     // Apply pagination
     questions = questions.slice((page - 1) * pageSize, page * pageSize);

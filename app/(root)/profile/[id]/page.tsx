@@ -17,7 +17,7 @@ import AnswerCard from '@/components/cards/AnswerCard'
 const page = async ({ params, searchParams }: any) => {
 
     const { userId } = auth()
-    const { user, totalQuestions, totalAnswers } = await getUserInfo({ userId: params.id }) as { user: any; totalQuestions: number; totalAnswers: number }
+    const { user, totalQuestions, totalAnswers, badgeCounts } = await getUserInfo({ userId: params.id }) as { user: any; totalQuestions: number; totalAnswers: number, badgeCounts: any }
 
     const { questions, totalPages } = await getUserQuestions({ userId: user._id, page: searchParams.page || 1, pageSize: 5 }) as { questions: any[]; totalPages: number }
 
@@ -72,7 +72,7 @@ const page = async ({ params, searchParams }: any) => {
 
             <div className='mb-10'>
                 <h1 className='h3-bold my-6 dark:text-white'>Stats</h1>
-                <Stats answers={totalAnswers} questions={totalQuestions} />
+                <Stats answers={totalAnswers} questions={totalQuestions} badgeCounts={badgeCounts} />
             </div>
 
             <Tabs defaultValue="account" className="mt-4">
