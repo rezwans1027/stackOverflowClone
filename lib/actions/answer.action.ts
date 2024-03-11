@@ -6,6 +6,7 @@ import Question from "@/database/question.model";
 import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams, GetUserStatsParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import User from "@/database/user.model";
+import Interaction from "@/database/interaction.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -22,6 +23,14 @@ export async function createAnswer(params: CreateAnswerParams) {
     await Question.findByIdAndUpdate(question, {
       $push: { answers: answer._id },
     });
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
+
+      await Interaction.create({
+        user: author,
+        action: "answer_question",
+        answer: answer._id,
+      });
 
     revalidatePath(path);
   } catch (error) {
@@ -75,14 +84,32 @@ export async function getAnswersByQuestionId(params: GetAnswersParams) {
 export async function upvoteAnswer(params: AnswerVoteParams) {
   try {
     connectToDatabase();
-    const { answerId, userId, hasUpvoted, path } = params;
+    const { answerId, userId, hasUpvoted, hasDownvoted, path } = params;
 
-    await Answer.findByIdAndUpdate(
+    const answer = await Answer.findByIdAndUpdate(
       answerId,
       hasUpvoted
         ? { $pull: { upvotes: userId } }
         : { $push: { upvotes: userId }, $pull: { downvotes: userId } },
         { new: true }
+    );
+
+    await User.findByIdAndUpdate(
+      userId,
+      hasUpvoted
+        ? { $inc: { reputation: -1 } }
+        : hasDownvoted
+          ? { $inc: { reputation: 2 } }
+          : { $inc: { reputation: 1 } }
+    );
+
+    await User.findByIdAndUpdate(
+      answer.author,
+      hasUpvoted
+        ? { $inc: { reputation: -10 } }
+        : hasDownvoted
+          ? { $inc: { reputation: 12 } }
+          : { $inc: { reputation: 10 } }
     );
 
     revalidatePath(path);
@@ -95,14 +122,32 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
 export async function downvoteAnswer(params: AnswerVoteParams) {
   try {
     connectToDatabase();
-    const { answerId, userId, hasDownvoted, path } = params;
+    const { answerId, userId, hasDownvoted, hasUpvoted, path } = params;
 
-    await Answer.findByIdAndUpdate(
+    const answer = await Answer.findByIdAndUpdate(
       answerId,
       hasDownvoted
         ? { $pull: { downvotes: userId } }
         : { $push: { downvotes: userId }, $pull: { upvotes: userId } },
         { new: true }
+    );
+
+    await User.findByIdAndUpdate(
+      userId,
+      hasDownvoted
+        ? { $inc: { reputation: 1 } }
+        : hasUpvoted
+          ? { $inc: { reputation: -2 } }
+          : { $inc: { reputation: -1 } }
+    );
+
+    await User.findByIdAndUpdate(
+      answer.author,
+      hasDownvoted
+        ? { $inc: { reputation: 2 } }
+        : hasUpvoted
+          ? { $inc: { reputation: -12 } }
+          : { $inc: { reputation: -2 } }
     );
 
     revalidatePath(path);

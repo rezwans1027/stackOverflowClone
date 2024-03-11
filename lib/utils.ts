@@ -1,8 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const getTimestamp = (createdAt: Date): string => {
@@ -19,25 +19,25 @@ export const getTimestamp = (createdAt: Date): string => {
 
   if (timeDifference < minute) {
     const seconds = Math.floor(timeDifference / 1000);
-    return `${seconds} ${seconds === 1 ? 'second' : 'seconds'} ago`;
+    return `${seconds} ${seconds === 1 ? "second" : "seconds"} ago`;
   } else if (timeDifference < hour) {
     const minutes = Math.floor(timeDifference / minute);
-    return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
   } else if (timeDifference < day) {
     const hours = Math.floor(timeDifference / hour);
-    return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+    return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
   } else if (timeDifference < week) {
     const days = Math.floor(timeDifference / day);
-    return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+    return `${days} ${days === 1 ? "day" : "days"} ago`;
   } else if (timeDifference < month) {
     const weeks = Math.floor(timeDifference / week);
-    return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
+    return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
   } else if (timeDifference < year) {
     const months = Math.floor(timeDifference / month);
-    return `${months} ${months === 1 ? 'month' : 'months'} ago`;
+    return `${months} ${months === 1 ? "month" : "months"} ago`;
   } else {
     const years = Math.floor(timeDifference / year);
-    return `${years} ${years === 1 ? 'year' : 'years'} ago`;
+    return `${years} ${years === 1 ? "year" : "years"} ago`;
   }
 };
 
@@ -53,14 +53,30 @@ export const formatAndDivideNumber = (num: number): string => {
   }
 };
 
-export function getMonthAndYear(date:Date) {
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+export function getMonthAndYear(date: Date) {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const month = monthNames[date.getMonth()];
   const year = date.getFullYear();
   return `${month} ${year}`;
 }
 
-export function addSearchParams(currentSearchParams:any, searchParamsToAdd:any) {
+export function addSearchParams(
+  currentSearchParams: any,
+  searchParamsToAdd: any
+) {
   // Combine current search parameters with new ones
   const combinedParams = { ...currentSearchParams, ...searchParamsToAdd };
 
@@ -73,7 +89,19 @@ export function addSearchParams(currentSearchParams:any, searchParamsToAdd:any) 
 export const handlePageChange = () => {
   // Scroll to the top of the page
   window.scrollTo({
-      top: 0,
-      behavior: 'smooth' // Optional: Use smooth scrolling effect
+    top: 0,
+    behavior: "smooth", // Optional: Use smooth scrolling effect
   });
 };
+
+export function throttle<T extends (...args: any[]) => any>(func: T, limit: number): (...args: Parameters<T>) => void {
+  let inThrottle: boolean;
+  return function(this: ThisParameterType<T>, ...args: Parameters<T>): void {
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+}

@@ -11,7 +11,6 @@ export async function viewQuestion(params: ViewQuestionParams) {
 
     const { questionId, userId } = params;
 
-
     if (userId) {
       const existingInteraction = await Interaction.findOne({
         user: userId,

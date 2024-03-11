@@ -3,7 +3,7 @@ import { downvoteAnswer, upvoteAnswer } from '@/lib/actions/answer.action'
 import { viewQuestion } from '@/lib/actions/interaction.action'
 import { downvoteQuestion, upvoteQuestion } from '@/lib/actions/question.action'
 import { toggleSaveQuestion } from '@/lib/actions/user.action'
-import { formatAndDivideNumber } from '@/lib/utils'
+import { formatAndDivideNumber, throttle } from '@/lib/utils'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import React, { useEffect } from 'react'
@@ -41,13 +41,13 @@ const Votes = ({
 
   const path = usePathname()
 
-  const handleUpvote = async () => {
+  const upvote = async () => {
     if (!userId) return
     if (type === 'question') await upvoteQuestion({ questionId: itemId, userId, hasUpvoted, hasDownvoted, path })
     else if (type === 'answer') await upvoteAnswer({ answerId: itemId, userId, hasUpvoted, hasDownvoted, path })
   } 
 
-  const handleDownvote = async () => {
+  const downvote = async () => {
     if (!userId) return
     if (type === 'question') await downvoteQuestion({ questionId: itemId, userId, hasUpvoted, hasDownvoted, path })
     else if (type === 'answer') await downvoteAnswer({ answerId: itemId, userId, hasUpvoted, hasDownvoted, path })
@@ -57,6 +57,9 @@ const Votes = ({
     console.log(hasSaved)
     toggleSaveQuestion({ questionId: itemId, userId, path })
   }
+
+  const handleUpvote = throttle(upvote, 1000)
+  const handleDownvote = throttle(downvote, 1000)
 
   return (
     <div className='flex items-center gap-2'>

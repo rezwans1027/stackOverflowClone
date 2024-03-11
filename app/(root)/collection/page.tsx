@@ -14,7 +14,7 @@ const Page = async ({ searchParams }: URLProps) => {
 
   const { userId } = auth()
 
-  const result = await getSavedQuestions({ clerkId: userId!, searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 1 })
+  const result = await getSavedQuestions({ clerkId: userId!, searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 7 })
 
   return (
     <div className='flex min-h-[78vh] flex-col justify-between'>
