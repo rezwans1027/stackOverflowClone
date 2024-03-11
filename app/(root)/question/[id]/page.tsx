@@ -1,5 +1,6 @@
 import Answer from '@/components/forms/Answer';
 import AllAnswers from '@/components/shared/AllAnswers';
+import NoResult from '@/components/shared/NoResult';
 import PaginationBar from '@/components/shared/PaginationBar';
 import ParseHTML from '@/components/shared/ParseHTML';
 import RenderTag from '@/components/shared/RenderTag';
@@ -82,7 +83,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
             <AllAnswers questionId={result._id} totalAnswers={result.answers.length} filter={searchParams.filter?.toString() || ''} page={parseInt(searchParams.page || '1')} />
 
-            <PaginationBar searchParams={searchParams} totalPages={Math.ceil(result.answers.length / 10)} />
+            {result.answers.length > 0 ? <PaginationBar searchParams={searchParams} totalPages={Math.ceil(result.answers.length / 10)} /> : <NoResult title='No Answers Yet' description='Be the first to answer this question below'  />}
 
             <Answer mongoUserId={mongoUser?._id.toString()} questionId={result._id.toString()} />
 

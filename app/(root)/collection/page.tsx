@@ -69,3 +69,4 @@ const Page = async ({ searchParams }: URLProps) => {
 }
 
 export default Page
+

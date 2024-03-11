@@ -10,7 +10,7 @@ import React from 'react'
 
 const page = async ({ searchParams }: URLProps) => {
 
-  const result = await getAllUsers({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1') , pageSize: 15 })
+  const result = await getAllUsers({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 15 })
 
   return (
     <div className='flex min-h-[78vh] flex-col justify-between'>
@@ -35,7 +35,7 @@ const page = async ({ searchParams }: URLProps) => {
           />
         </div>
 
-        <div className='mt-8 flex flex-wrap gap-4'>
+        <div className='mt-8 flex flex-wrap justify-center gap-4'>
           {
             result && result.users?.length > 0 ?
               result?.users.map(user => (
