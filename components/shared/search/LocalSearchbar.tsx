@@ -56,7 +56,7 @@ const LocalSearchBar = ({
     };
 
     return (
-        <div className={`background-light700_dark300  flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}>
+        <div className={`background-light750_dark300  flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}>
 
             {iconPosition === 'left' && (<Image
                 src={imgSrc}
@@ -70,7 +70,7 @@ const LocalSearchBar = ({
                 placeholder={placeholder}
                 value={inputValue}
                 onChange={(e) => handleInputChange(e)}
-                className='paragraph-regular no-focus placeholder background-light700_dark300 border-none shadow-none outline-none'
+                className='text-dark400_light700 paragraph-regular no-focus placeholder background-light750_dark300 border-none shadow-none outline-none'
             />
         </div>
     )
