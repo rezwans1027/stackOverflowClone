@@ -12,7 +12,7 @@ import Link from "next/link";
 
 export default async function Home({ searchParams }: URLProps) {
 
-  const result = await getQuestions({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 5 })
+  const result = await getQuestions({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 8 })
 
   return (
     <div className="flex min-h-[78vh] flex-col justify-between gap-4">
@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: URLProps) {
         <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="h1-bold text-dark100_light900">All Questions</h1>
 
-          <Link href='/ask-question' className="flex justify-end max-sm:w-full">
+          <Link href='/ask-question' className="flex w-fit justify-end max-sm:ml-auto">
             <Button className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900">Ask a Question</Button>
           </Link>
         </div>

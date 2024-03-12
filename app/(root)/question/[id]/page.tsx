@@ -15,6 +15,8 @@ import Link from 'next/link';
 import React from 'react'
 
 const Page = async ({ params, searchParams }: URLProps) => {
+    // const isValidObjectId = (id) => /^[a-f\d]{24}$/i.test(id);
+    // if (!isValidObjectId(params.id)) return 
     const result = await getQuestionById({ questionId: params.id });
     const { userId } = auth()
 

@@ -32,7 +32,7 @@ const QuestionCard = ({
     views,
     answers,
     createdAt,
-    showEdit=false
+    showEdit = false
 }: customProps) => {
     return (
         <div className='card-wrapper rounded-lg p-8 '>
@@ -42,9 +42,9 @@ const QuestionCard = ({
                 </Link>
                 {showEdit && <div className='ml-4 flex gap-2'>
                     <Link href={`/question/${_id}/edit`} className=''>
-                         <Image src='/assets/icons/edit.svg' width={20} height={20} alt='more' className='' />
+                        <Image src='/assets/icons/edit.svg' width={20} height={20} alt='more' className='' />
                     </Link>
-                   
+
                     <Confirmation
                         title="Are you sure you want to delete this question?"
                         description="This action cannot be undone."
@@ -58,7 +58,7 @@ const QuestionCard = ({
 
             </div>
 
-            <div className='flex gap-3'>
+            <div className='flex flex-wrap gap-3'>
                 {tags.map(tag => (
                     <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
                 ))}

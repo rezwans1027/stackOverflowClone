@@ -149,7 +149,6 @@ export async function getQuestionById({ questionId }: GetQuestionByIdParams) {
     return question;
   } catch (error) {
     console.error(error);
-    throw new Error("Error getting question by ID");
   }
 }
 

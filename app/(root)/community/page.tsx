@@ -10,7 +10,7 @@ import React from 'react'
 
 const page = async ({ searchParams }: URLProps) => {
 
-  const result = await getAllUsers({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 15 })
+  const result = await getAllUsers({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 12 })
 
   return (
     <div className='flex min-h-[78vh] flex-col justify-between'>

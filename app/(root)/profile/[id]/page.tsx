@@ -12,11 +12,13 @@ import React from 'react'
 import PaginationBar from '@/components/shared/PaginationBar'
 import { getUserAnswers } from '@/lib/actions/answer.action'
 import AnswerCard from '@/components/cards/AnswerCard'
+import { redirect } from 'next/dist/server/api-utils'
 
 
 const page = async ({ params, searchParams }: any) => {
 
     const { userId } = auth()
+
     const { user, totalQuestions, totalAnswers, badgeCounts } = await getUserInfo({ userId: params.id }) as { user: any; totalQuestions: number; totalAnswers: number, badgeCounts: any }
 
     const { questions, totalPages } = await getUserQuestions({ userId: user._id, page: searchParams.page || 1, pageSize: 5 }) as { questions: any[]; totalPages: number }

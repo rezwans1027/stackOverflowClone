@@ -25,10 +25,10 @@ const loading = () => {
       </div>
 
       <div className="my-10 hidden flex-wrap gap-6 md:flex">
-        <Skeleton className="h-9 w-40 bg-slate-300 dark:bg-slate-700" />
-        <Skeleton className="h-9 w-40 bg-slate-300 dark:bg-slate-700" />
-        <Skeleton className="h-9 w-40 bg-slate-300 dark:bg-slate-700" />
-        <Skeleton className="h-9 w-40 bg-slate-300 dark:bg-slate-700" />
+        <Skeleton className="h-6 w-20 bg-slate-300 dark:bg-slate-700" />
+        <Skeleton className="h-6 w-24 bg-slate-300 dark:bg-slate-700" />
+        <Skeleton className="h-6 w-20 bg-slate-300 dark:bg-slate-700" />
+        <Skeleton className="h-6 w-24 bg-slate-300 dark:bg-slate-700" />
       </div>
 
       <div className="flex flex-col gap-6">

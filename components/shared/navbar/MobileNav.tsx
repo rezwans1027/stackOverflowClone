@@ -17,14 +17,14 @@ import { usePathname } from 'next/navigation'
 const NavContent = () => {
     const pathname = usePathname()
     return (
-        <section className='flex h-full flex-col gap-6 pb-8 pt-16'>
+        <section className='flex h-full flex-col gap-3 pb-8 pt-16'>
             {sidebarLinks.map(item => {
                 const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
                 return (
                     <Link href={item.route}
                         key={item.label}
                     >
-                        <SheetClose key={item.route} className={`${isActive ? 'primary-gradient rounded-lg text-light-900' : 'text-dark200_light900'} flex w-full items-center justify-start gap-4 bg-transparent p-4`}>
+                        <SheetClose key={item.route} className={`${isActive ? 'primary-gradient rounded-lg text-light-900' : 'text-dark200_light900'} flex w-full items-center justify-start gap-3 bg-transparent p-2`}>
                             <Image src={item.imgURL} alt={item.label} width={20} height={20} className={`${!isActive && 'invert-colors'}`} />
                             <p className={`${isActive ? 'base-bold' : 'base-medium'}`} >{item.label}</p>
                         </SheetClose>
