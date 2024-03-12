@@ -29,7 +29,7 @@ const AllAnswers = async ({ questionId, totalAnswers, filter, page, searchParams
 
     return (
         <div className='mt-11'>
-            <div className='flex items-center justify-between max-sm:flex-col-reverse max-sm:items-start'>
+            <div className='flex items-center justify-between max-sm:flex-col-reverse max-sm:items-start max-sm:gap-4'>
                 <h3 className='primary-text-gradient'>{totalAnswers} Answers</h3>
 
                 <Filters filters={AnswerFilters} />
@@ -52,16 +52,16 @@ const AllAnswers = async ({ questionId, totalAnswers, filter, page, searchParams
                             </Link>
 
                             <div className='flex justify-end '>
-                            <Votes
-                            type={"answer"}
-                            itemId={answer._id.toString()}
-                            userId={mongoUser?._id.toString()}
-                            upvotes={answer.upvotes.length}
-                            downvotes={answer.downvotes.length}
-                            hasUpvoted={answer.upvotes.includes(mongoUser?._id.toString())}
-                            hasDownvoted={answer.downvotes.includes(mongoUser?._id.toString())}
+                                <Votes
+                                    type={"answer"}
+                                    itemId={answer._id.toString()}
+                                    userId={mongoUser?._id.toString()}
+                                    upvotes={answer.upvotes.length}
+                                    downvotes={answer.downvotes.length}
+                                    hasUpvoted={answer.upvotes.includes(mongoUser?._id.toString())}
+                                    hasDownvoted={answer.downvotes.includes(mongoUser?._id.toString())}
 
-                        />
+                                />
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@ const AllAnswers = async ({ questionId, totalAnswers, filter, page, searchParams
                 </article>
             ))}
 
-            
+
 
         </div>
     )

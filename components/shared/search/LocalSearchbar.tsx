@@ -39,7 +39,7 @@ const LocalSearchBar = ({
                     params.delete('search');
                 }
                 params.delete('page');
-                router.replace(pathname + `?${params.toString()}`)
+                router.replace(pathname + `?${params.toString()}`, { scroll: false })
 
             };
 
@@ -70,7 +70,7 @@ const LocalSearchBar = ({
                 placeholder={placeholder}
                 value={inputValue}
                 onChange={(e) => handleInputChange(e)}
-                className='text-dark400_light700 paragraph-regular no-focus placeholder background-light750_dark300 border-none shadow-none outline-none'
+                className='text-dark400_light700 no-focus placeholder background-light750_dark300 border-none text-lg shadow-none outline-none'
             />
         </div>
     )

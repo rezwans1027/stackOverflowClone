@@ -14,7 +14,7 @@ const Page = async ({ searchParams }: URLProps) => {
 
   const { userId } = auth()
 
-  const result = await getSavedQuestions({ clerkId: userId!, searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 7 })
+  const result = await getSavedQuestions({ clerkId: userId!, searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page || '1'), pageSize: 3 })
 
   return (
     <div className='flex min-h-[78vh] flex-col justify-between'>
@@ -38,31 +38,36 @@ const Page = async ({ searchParams }: URLProps) => {
           />
         </div>
 
-        <div className='mt-8 flex flex-col gap-6'>
+        <div className='mt-8'>
           {
             result && result.savedQuestions.length > 0 ?
-              result?.savedQuestions.map((question: any) => (
-                <QuestionCard
-                  key={question._id}
-                  _id={question._id}
-                  title={question.title}
-                  tags={question.tags}
-                  author={question.author}
-                  upvotes={question.upvotes}
-                  views={question.views}
-                  answers={question.answers}
-                  createdAt={question.createdAt}
-                />
-              ))
+              <div className='flex flex-col gap-6'>
+                {result?.savedQuestions.map((question: any) => (
+                  <QuestionCard
+                    key={question._id}
+                    _id={question._id}
+                    title={question.title}
+                    tags={question.tags}
+                    author={question.author}
+                    upvotes={question.upvotes}
+                    views={question.views}
+                    answers={question.answers}
+                    createdAt={question.createdAt}
+                  />
+
+                ))}
+
+                <PaginationBar searchParams={searchParams} totalPages={result?.totalPages} />
+              </div>
               : <NoResult
                 title="No Questions found"
-                description="Save the questions that matter to you the most, so that you never lose them."
+                description="Save the questions that you might need later, so that you never lose them."
               />
           }
         </div>
       </div>
 
-      <PaginationBar searchParams={searchParams} totalPages={result?.totalPages} />
+      {/* <PaginationBar searchParams={searchParams} totalPages={result?.totalPages} /> */}
 
     </div>
   )

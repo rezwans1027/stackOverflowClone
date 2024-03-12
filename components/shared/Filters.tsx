@@ -2,15 +2,8 @@
 
 import { Badge } from '@/components/ui/badge'
 import React, { useEffect, useState } from 'react'
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import CustomSelect from './CustomSelect'
 
 interface Props {
     filters: {
@@ -27,7 +20,7 @@ const Filters = ({ filters, spread }: Props) => {
     const pathname = usePathname()
     const searchParams = useSearchParams();
     const [filterValue, setFilterValue] = useState(searchParams.get('filter') || '')
-    const [open, setOpen] = useState(false)
+
 
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
@@ -48,7 +41,6 @@ const Filters = ({ filters, spread }: Props) => {
 
     return (
         <>
-            {open && (<div className="absolute inset-0 z-[50] h-[100vh]  w-[100vw] bg-transparent" />)}
             {spread && <div className='mt-4 flex gap-3'>
                 {filters.map(item => (
                     <Badge
@@ -59,24 +51,8 @@ const Filters = ({ filters, spread }: Props) => {
                     </Badge>))}
             </div>}
 
-            <Select onOpenChange={() => setOpen(prev => !prev)} onValueChange={(value) => setFilterValue(filterValue === value ? '' : value)}>
-                <SelectTrigger className={`h-14 w-[180px] border-none bg-light-750 outline-none dark:bg-dark-300 dark:text-white max-sm:w-full ${spread && 'md:hidden'}`}>
-                    <SelectValue placeholder="Select a filter" />
-                </SelectTrigger>
-                <SelectContent className=' border-solid border-gray-200 bg-light-800 dark:border-gray-900 dark:bg-dark-500 dark:text-white dark:shadow-dark-100'>
-                    <SelectGroup>
-                        <SelectItem className='px-8 py-4' key={'none'} value={'none'}>Select a filter</SelectItem>
-                        {filters.map(item => (
-                            <SelectItem
-                                className='px-8 py-4'
-                                key={item.value}
-                                value={item.value}>
-                                {item.name}
-                            </SelectItem>))}
-                    </SelectGroup>
-                </SelectContent>
-                {open && (<div onClick={e => e.stopPropagation()} className="absolute inset-0 z-[2000] h-[100vh]  w-[100vw] bg-transparent" />)}
-            </Select>
+            <CustomSelect extraClasses={spread && 'md:hidden'} filters={filters} onValueChange={(value:any) => setFilterValue(filterValue === value ? '' : value)} />
+
         </>
     )
 }

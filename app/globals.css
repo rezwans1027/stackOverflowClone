@@ -4,6 +4,9 @@
 
 @import url("../styles/theme.css");
 
+body {
+  background-color: gray;
+}
 
 @layer utilities {
   .flex-center {
