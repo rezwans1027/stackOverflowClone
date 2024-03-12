@@ -12,7 +12,6 @@ import React from 'react'
 import PaginationBar from '@/components/shared/PaginationBar'
 import { getUserAnswers } from '@/lib/actions/answer.action'
 import AnswerCard from '@/components/cards/AnswerCard'
-import { redirect } from 'next/dist/server/api-utils'
 
 
 const page = async ({ params, searchParams }: any) => {
