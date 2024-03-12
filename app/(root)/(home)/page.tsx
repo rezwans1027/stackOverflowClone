@@ -92,7 +92,9 @@ export default async function Home({ searchParams }: URLProps) {
       </div>
 
       <div >
-        <PaginationBar searchParams={searchParams} totalPages={10} />
+        {Array.isArray(result) ? null : (
+          <PaginationBar searchParams={searchParams} totalPages={result.totalPages} />
+        )}
       </div>
 
 
