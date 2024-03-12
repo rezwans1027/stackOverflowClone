@@ -22,12 +22,15 @@ export async function viewQuestion(params: ViewQuestionParams) {
         return 
       }
 
-      await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } });
+      const question = await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } });
+
+      if (question === null) return
 
       await Interaction.create({
         user: userId,
         action: "view",
         question: questionId,
+        tags: question.tags,
       });
 
     }

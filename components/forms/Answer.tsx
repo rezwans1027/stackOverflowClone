@@ -38,7 +38,7 @@ const Answer = ({ mongoUserId, questionId }: props) => {
 
             await createAnswer({
                 content: data.answer,
-                question: questionId,
+                questionId,
                 author: mongoUserId,
                 path
             })

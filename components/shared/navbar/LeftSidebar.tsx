@@ -40,14 +40,7 @@ const LeftSidebar = () => {
                 </SignedIn>
             </div>
             <div>
-                <SignedIn>
-                    <SignOutButton >
-                        <div className='flex gap-3 p-4'>
-                            <Image src='/assets/icons/close.svg' height={20} width={20} alt='' className='' />
-                            <p className='text-xl dark:text-white max-lg:hidden'>Logout</p>
-                        </div>
-                    </SignOutButton>
-                </SignedIn>
+                
                 <SignedOut>
                     <div className='flex flex-col gap-2'>
                         <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL}/sign-in/?redirect_url=${pathname}`}>

@@ -11,6 +11,7 @@ const scrollToTop = () => {
 }
 
 const PaginationBar = ({ searchParams, totalPages }:any) => {
+
     return (
         <div >
             <Pagination className='mt-4'>

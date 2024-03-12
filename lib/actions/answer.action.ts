@@ -3,7 +3,13 @@
 import { connectToDatabase } from "../mongoose";
 import Answer from "@/database/answer.model";
 import Question from "@/database/question.model";
-import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams, GetUserStatsParams } from "./shared.types";
+import {
+  AnswerVoteParams,
+  CreateAnswerParams,
+  DeleteAnswerParams,
+  GetAnswersParams,
+  GetUserStatsParams,
+} from "./shared.types";
 import { revalidatePath } from "next/cache";
 import User from "@/database/user.model";
 import Interaction from "@/database/interaction.model";
@@ -12,25 +18,26 @@ export async function createAnswer(params: CreateAnswerParams) {
   try {
     connectToDatabase();
 
-    const { content, question, author, path } = params;
+    const { content, questionId, author, path } = params;
 
     const answer = await Answer.create({
       content,
-      question, // This is the question id
+      question: questionId, // This is the question id
       author, // This is the user id
     });
 
-    await Question.findByIdAndUpdate(question, {
+    const question = await Question.findByIdAndUpdate(questionId, {
       $push: { answers: answer._id },
-    });
+    }).select("tags");
 
     await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
 
-      await Interaction.create({
-        user: author,
-        action: "answer_question",
-        answer: answer._id,
-      });
+    await Interaction.create({
+      user: author,
+      action: "answer_question",
+      answer: answer._id,
+      tags: question.tags,
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -43,7 +50,6 @@ export async function getAnswersByQuestionId(params: GetAnswersParams) {
     connectToDatabase();
 
     const { questionId, sortBy, page = 1, pageSize = 1 } = params;
-
 
     let sort = {};
 
@@ -91,7 +97,7 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
       hasUpvoted
         ? { $pull: { upvotes: userId } }
         : { $push: { upvotes: userId }, $pull: { downvotes: userId } },
-        { new: true }
+      { new: true }
     );
 
     await User.findByIdAndUpdate(
@@ -129,7 +135,7 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
       hasDownvoted
         ? { $pull: { downvotes: userId } }
         : { $push: { downvotes: userId }, $pull: { upvotes: userId } },
-        { new: true }
+      { new: true }
     );
 
     await User.findByIdAndUpdate(
@@ -171,7 +177,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
     let answers = await Answer.find({ author: userId })
       .populate({ path: "author", model: User, select: "_id name picture" })
       .populate({ path: "upvotes", model: User, select: "_id" })
-      .populate({ path: "question", model: Question, select: "_id title" })
+      .populate({ path: "question", model: Question, select: "_id title" });
 
     // Sort answers based on the number of upvotes
     answers.sort((a, b) => {
@@ -191,12 +197,14 @@ export async function getUserAnswers(params: GetUserStatsParams) {
   }
 }
 
-export async function deleteAnswer({ answerId, path }:DeleteAnswerParams) {
+export async function deleteAnswer({ answerId, path }: DeleteAnswerParams) {
   try {
     connectToDatabase();
 
     const answer = await Answer.findByIdAndDelete(answerId);
-    await Question.findByIdAndUpdate(answer.question, { $pull: { answers: answerId } });
+    await Question.findByIdAndUpdate(answer.question, {
+      $pull: { answers: answerId },
+    });
 
     revalidatePath(path);
   } catch (error) {
