@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { sidebarLinks } from '@/constants'
 import Image from 'next/image'
 import Link from 'next/link'
-import { SignedIn, SignedOut, SignOutButton, useAuth } from '@clerk/nextjs'
+import { SignedIn, SignedOut, useAuth } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
 
 
