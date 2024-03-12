@@ -10,7 +10,7 @@ import React from 'react'
 
 const page = async ({ searchParams }: URLProps) => {
 
-    const result = await getAllTags({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page?.toString() || '1'), pageSize: 6 })
+    const result = await getAllTags({ searchQuery: searchParams.search?.toString() || '', filter: searchParams.filter?.toString() || '', page: parseInt(searchParams.page?.toString() || '1'), pageSize: 24 })
 
     return (
         <div className='flex min-h-[78vh] flex-col justify-between gap-4' >
@@ -34,11 +34,12 @@ const page = async ({ searchParams }: URLProps) => {
                     />
                 </div>
 
-                <section className="mt-12 flex flex-wrap gap-4">
+                <section className="mt-12 flex flex-wrap justify-center gap-4">
+
                     {result && result.tags.length > 0 ? (
                         result.tags.map((tag) => (
                             <Link href={`/tags/${tag._id}`} key={tag._id} className="shadow-light100_darknone">
-                                <article className="background-light900_dark200 light-border flex w-full flex-col rounded-2xl border px-8 py-10 sm:w-[260px]">
+                                <div className="background-light900_dark200 light-border flex h-48 w-[190px] flex-col items-center justify-center rounded-2xl border px-4 py-5">
                                     <div className="background-light700_dark400 w-fit rounded-sm px-5 py-1.5">
                                         <p className="paragraph-semibold text-dark300_light900">
                                             {tag.name}
@@ -48,7 +49,7 @@ const page = async ({ searchParams }: URLProps) => {
                                     <p className="small-medium text-dark400_light500 mt-3.5">
                                         <span className="body-semibold primary-text-gradient mr-2.5">{tag.questionCount}+</span> Questions
                                     </p>
-                                </article>
+                                </div>
                             </Link>
                         ))
                     ) : (
@@ -60,7 +61,9 @@ const page = async ({ searchParams }: URLProps) => {
                         />
                     )}
                 </section>
+
             </div>
+
 
             <PaginationBar searchParams={searchParams} totalPages={result?.totalPages} />
         </div>

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 import { updateUserProfile } from "@/lib/actions/user.action"
+import { useToast } from "../ui/use-toast"
 
 
 interface Props {
@@ -39,6 +40,7 @@ const Profile = ({
     const [saving, setSaving] = useState(false)
     const path = usePathname()
     const router = useRouter()
+    const { toast } = useToast()
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof UserSchema>>({
@@ -63,6 +65,7 @@ const Profile = ({
             } finally {
                 setSaving(false);
                 router.push(`/profile/${userId}`);
+                toast({ description: "Your profile has been updated." })
             }
         })();
     }
@@ -144,7 +147,8 @@ const Profile = ({
                                 )}
                             />
                             <div className="flex flex-row-reverse">
-                                <Button type="submit" className='primary-gradient w-fit !text-light-900' >
+                                <Button
+                                 type="submit" className='primary-gradient w-fit !text-light-900' >
                                     {saving ? 'Saving...' : 'Save'}
                                 </Button>
                             </div>

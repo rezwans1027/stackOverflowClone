@@ -7,6 +7,7 @@ import { formatAndDivideNumber, throttle } from '@/lib/utils'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import React, { useEffect } from 'react'
+import { useToast } from '../ui/use-toast'
 
 interface Props {
   type: string
@@ -31,6 +32,7 @@ const Votes = ({
 }: Props) => {
 
   const pathname = usePathname()
+  const { toast } = useToast()
 
   useEffect(() => {
     viewQuestion({
@@ -42,19 +44,28 @@ const Votes = ({
   const path = usePathname()
 
   const upvote = async () => {
-    if (!userId) return
+    if (!userId) {
+      toast({ description: "You need to be logged in to upvote." })
+      return
+    }
     if (type === 'question') await upvoteQuestion({ questionId: itemId, userId, hasUpvoted, hasDownvoted, path })
     else if (type === 'answer') await upvoteAnswer({ answerId: itemId, userId, hasUpvoted, hasDownvoted, path })
-  } 
+  }
 
   const downvote = async () => {
-    if (!userId) return
+    if (!userId) {
+      toast({ description: "You need to be logged in to downvote." })
+      return
+    }
     if (type === 'question') await downvoteQuestion({ questionId: itemId, userId, hasUpvoted, hasDownvoted, path })
     else if (type === 'answer') await downvoteAnswer({ answerId: itemId, userId, hasUpvoted, hasDownvoted, path })
   }
 
   const handleSave = async () => {
-    console.log(hasSaved)
+    if (!userId) {
+      toast({ description: "You need to be logged in to save a question." })
+      return
+    }
     toggleSaveQuestion({ questionId: itemId, userId, path })
   }
 

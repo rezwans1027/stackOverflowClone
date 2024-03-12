@@ -10,6 +10,7 @@ import { useTheme } from '@/context/ThemeProvider'
 import { Button } from '../ui/button'
 import { createAnswer } from '@/lib/actions/answer.action'
 import { usePathname } from 'next/navigation'
+import { useToast } from '../ui/use-toast'
 
 interface props {
     mongoUserId: string,
@@ -21,6 +22,7 @@ const Answer = ({ mongoUserId, questionId }: props) => {
     const editorRef = useRef(null)
     const { mode } = useTheme()
     const path = usePathname()
+    const { toast } = useToast()
 
     const form = useForm<z.infer<typeof AnswerSchema>>({
         resolver: zodResolver(AnswerSchema),
@@ -30,6 +32,7 @@ const Answer = ({ mongoUserId, questionId }: props) => {
     })
 
     const handleCreateAnswer = async (data: z.infer<typeof AnswerSchema>) => {
+        if (!mongoUserId) return toast({ description: "You need to be logged in to answer." })
         try {
             setIsSubmitting(true)
 
@@ -50,6 +53,7 @@ const Answer = ({ mongoUserId, questionId }: props) => {
         }
         finally {
             setIsSubmitting(false)
+            toast({ description: "Your answer has been posted." })
         }
     }
 
@@ -58,7 +62,7 @@ const Answer = ({ mongoUserId, questionId }: props) => {
             <div className='flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2'>
                 <h4 className='paragraph-semibold text-dark400_light800'>Write your answer here</h4>
 
-               
+
             </div>
             <Form {...form}>
                 <form className='mt-6 flex w-full flex-col gap-10' onSubmit={form.handleSubmit(handleCreateAnswer)}>
@@ -102,7 +106,8 @@ const Answer = ({ mongoUserId, questionId }: props) => {
                         )}
                     />
                     <div className='flex justify-end'>
-                        <Button type="submit" className="primary-gradient w-fit text-white" disabled={isSubmitting}>
+                        <Button type="submit"
+                            className="primary-gradient w-fit text-white" disabled={isSubmitting}>
                             {isSubmitting ? 'Posting...' : 'Post Answer'}
                         </Button>
                     </div>
