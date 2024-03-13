@@ -25,7 +25,6 @@ DevOverflow is built using the following technologies:
 - **MongoDB**: MongoDB is a general-purpose, document-based, distributed database built for modern application developers and for the cloud era.
 - **Mongoose**: Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment.
 - **Prism.js**: Prism is a lightweight, extensible syntax highlighter, built with modern web standards in mind.
-- **Query String**: Parse and stringify URL query strings.
 - **Svix**: Svix is a webhook proxy that allows you to receive webhooks locally.
 - **Zod**: Zod is a TypeScript-first schema declaration and validation library.
 - **Vercel**: Vercel is a cloud platform for frontend developers, providing the frameworks, workflows, and infrastructure to build a faster, more personalized Web.
@@ -93,7 +92,7 @@ DevOverflow provides a user-friendly interface for users to interact with the pl
 
 9. **Accessibility**: DevOverflow strives to provide an accessible and inclusive user experience, adhering to best practices for web accessibility standards. The platform ensures that users of all abilities can navigate, interact, and contribute to the community effectively.
 
-10. 📚 **References**
+📚 **References**
 
 JSMastery. (2023). *Ultimate Next.js 14 Course | Become a top 1% Next.js 14 developer*. E-Learning.
 
