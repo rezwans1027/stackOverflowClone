@@ -100,8 +100,6 @@ export async function getAllTags(params: GetAllTagsParams) {
       }
     );
 
-    console.log(tags[1]);
-
     return { tags, totalPages };
   } catch (error) {
     console.error(error);

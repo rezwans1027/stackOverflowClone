@@ -6,7 +6,6 @@ import React from 'react'
 
 const Page = async () => {
   const { userId } = auth()
-  console.log('userId', userId)
 
   if (!userId) redirect('/sign-in')
 

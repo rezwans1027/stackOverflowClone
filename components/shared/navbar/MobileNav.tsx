@@ -9,12 +9,15 @@ import {
 } from "@/components/ui/sheet"
 import Image from 'next/image'
 import Link from 'next/link'
-import { SignedOut } from '@clerk/nextjs'
+import { SignedIn, SignedOut, useAuth } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
 import { sidebarLinks } from '@/constants'
 import { usePathname } from 'next/navigation'
 
 const NavContent = () => {
+
+    const { userId } = useAuth();
+
     const pathname = usePathname()
     return (
         <section className='flex h-full flex-col gap-4 pb-4 pt-6'>
@@ -31,6 +34,14 @@ const NavContent = () => {
                     </Link>
                 )
             })}
+            <SignedIn>
+                <Link href={`/profile/${userId}`} >
+                    <SheetClose className={`${userId && pathname.includes(userId) ? 'primary-gradient rounded-lg text-light-900' : 'text-dark200_light900'} flex w-full items-center justify-start gap-3 bg-transparent p-2`} >
+                        <Image src={'/assets/icons/user.svg'} width={20} height={20} alt='link' className='invert-colors' />
+                        <p className={`${userId && pathname.includes(userId) ? 'base-bold' : 'base-medium'}`} >Profile</p>
+                    </SheetClose>
+                </Link>
+            </SignedIn>
         </section>
     )
 }

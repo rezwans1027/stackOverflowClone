@@ -12,8 +12,6 @@ export const connectToDatabase = async () => {
         await mongoose.connect(mongodbUrl, {
             dbName: 'devflow'
         });
-
-        console.log('new database connection');
     } catch (error) {
         console.error('error connecting to database');
     }

@@ -94,7 +94,7 @@ const GlobalResult = ({ openSetter, valueSetter, pathname }: GlobalResultProps) 
                     {result.length > 0 ?
                         <div>
                             {result.map((item: any, index: number) => (
-                                <Link key={item.id + item.type + index} href={renderLink(item.type, item.id)} onClick={() => console.log(renderLink(item.type, item.id))} className='flex w-full p-1 py-3 hover:bg-light-700/50 dark:hover:bg-dark-500/50'>
+                                <Link key={item.id + item.type + index} href={renderLink(item.type, item.id)} className='flex w-full p-1 py-3 hover:bg-light-700/50 dark:hover:bg-dark-500/50'>
                                     <Image src='/assets/icons/tag.svg' className='invert-colors ml-4 mr-3' width={24} height={24} alt='tag' />
                                     <div>
                                         <h1 className='paragraph-semibold line-clamp pb-1 dark:text-white'>{item.name}</h1>

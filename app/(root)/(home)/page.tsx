@@ -15,8 +15,6 @@ export default async function Home({ searchParams }: URLProps) {
 
   const { userId } = auth();
 
-  console.log(userId)
-
   let result;
 
   if (searchParams.filter === 'recommended') {
